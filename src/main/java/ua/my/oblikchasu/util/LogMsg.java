@@ -4,6 +4,9 @@ public abstract class LogMsg {
     public static final String ERROR = "Error!";
     public static final String SPACE = " ";
 
+    public static final String SESSION_CREATED = "New session created: ";
+    public static final String SESSION_DESTROYED = "Session destroyed: ";
+    public static final String SESSION_ASSIGNED_TO_USER = "Session assigned to user: ";
     public static final String USER_ADDED = "New user added to database: ";
     public static final String USER_UPDATED = "User updated: ";
     public static final String USER_DELETED = "User deleted: ";
@@ -35,5 +38,7 @@ public abstract class LogMsg {
     public static final String SIGNED_IN = " has signed-in";
     public static final String SIGNED_OUT = " has signed-out";
     public static final String ACCESS_DENIED = " - access denied";
+
+    public static final String LANGUAGE_SET = "Language set: ";
 
 }

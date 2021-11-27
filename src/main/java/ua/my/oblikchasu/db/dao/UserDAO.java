@@ -47,6 +47,30 @@ public class UserDAO implements GenericDAO<User> {
 
     }
 
+    public int findCount () throws DBException {
+        Connection con = null;
+        ResultSet rs = null;
+        Statement stmt = null;
+        int recordNumber = 0;
+        try {
+            con = ConnectionPool.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT COUNT(*) FROM user");
+            if (rs.next()) {
+                recordNumber = rs.getInt(1);
+            }
+            return recordNumber;
+        } catch (SQLException throwable) {
+            logger.error(LogMsg.ERROR, throwable);
+            throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
+        } finally {
+            closerResultSet(rs);
+            closeStatement(stmt);
+            closeConnection(con);
+        }
+
+    }
+
     public List<User> findSorted(String sortBy) throws DBException {
         Connection con = null;
         ResultSet rs = null;
@@ -78,16 +102,21 @@ public class UserDAO implements GenericDAO<User> {
 
     }
 
-    public List<User> findSortedPortion(String sortBy, int from, int amount) throws DBException {
+    public List<User> findSortedPortion(String sortBy, int from, int amount, String order) throws DBException {
         Connection con = null;
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         List<User> users = new LinkedList<>();
         try {
             con = ConnectionPool.getConnection();
-            pstmt = con.prepareStatement(DBQuery.SELECT_ALL_USERS + DBQuery.suffix.get(sortBy) + DBQuery.LIMIT);
-            pstmt.setInt(1,from);
-            pstmt.setInt(2,amount);
+            pstmt = con.prepareStatement(
+                        DBQuery.SELECT_ALL_USERS +
+                            DBQuery.ORDER_BY +
+                            sortBy + " " +
+                            order +
+                            DBQuery.LIMIT);
+            pstmt.setInt(1, from);
+            pstmt.setInt(2, amount);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 User tempUser = new User (
@@ -221,7 +250,7 @@ public class UserDAO implements GenericDAO<User> {
                 user.setId(rs.getInt(1));
             }
         } catch (SQLException throwable) {
-            logger.info(LogMsg.USER_ADD_FAIL + user.getLogin());
+            logger.info(LogMsg.USER_ADD_FAIL + user);
             logger.error(LogMsg.ERROR, throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
@@ -229,14 +258,13 @@ public class UserDAO implements GenericDAO<User> {
             closeStatement(pstmt);
             closeConnection(con);
         }
-        logger.info(LogMsg.USER_ADDED + user.getLogin());
+        logger.info(LogMsg.USER_ADDED + user);
         return user;
     }
 
     @Override
     public boolean update(User user) throws DBException {
         Connection con = null;
-        ResultSet rs = null;
         PreparedStatement pstmt = null;
 
         try {
@@ -246,17 +274,16 @@ public class UserDAO implements GenericDAO<User> {
             pstmt.setString(2, user.getName());
             pstmt.setInt(3, user.getId());
             if(pstmt.executeUpdate() == 1) {
-                logger.info(LogMsg.USER_UPDATED + user.getLogin());
+                logger.info(LogMsg.USER_UPDATED + user);
                 return true;
             } else {
                 return false;
             }
         } catch (SQLException throwable) {
-            logger.error(LogMsg.USER_UPDATE_FAIL + user.getId());
-            logger.error(LogMsg.ERROR + user.getId());
+            logger.error(LogMsg.USER_UPDATE_FAIL + user);
+            logger.error(LogMsg.ERROR + throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
-            closerResultSet(rs);
             closeStatement(pstmt);
             closeConnection(con);
         }
@@ -273,15 +300,15 @@ public class UserDAO implements GenericDAO<User> {
             pstmt.setInt(1, user.getId());
 
             if(pstmt.executeUpdate() == 1) {
-                logger.info(LogMsg.USER_DELETED + "id = " +user.getId());
+                logger.info(LogMsg.USER_DELETED + user);
 
                 return true;
             } else {
-                logger.error(LogMsg.USER_DELETE_FAIL + user.getLogin());
+                logger.error(LogMsg.USER_DELETE_FAIL + user);
                 return false;
             }
         } catch (SQLException throwable) {
-            logger.error(LogMsg.USER_DELETE_FAIL + user.getLogin());
+            logger.error(LogMsg.USER_DELETE_FAIL + user);
             logger.error(LogMsg.ERROR, throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {

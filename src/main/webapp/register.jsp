@@ -4,7 +4,7 @@ pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<fmt:setLocale value="${language}"/>
+<fmt:setLocale value="${sessionScope.language}"/>
 <fmt:setBundle basename="userinterface"/>
 
 <head>
@@ -24,11 +24,11 @@ pageEncoding="UTF-8"%>
         <h3></h3>
         <label><fmt:message key="label.login"/>:</label>
         <br>
-        <input name="login" type="text" minlength="3" pattern="[a-zA-Z0-9_]{3,}" required/>
+        <input name="login" type="text" minlength="3" maxlength="30" pattern="[a-zA-Z0-9_]{3,30}" required/>
         <br> <br>
         <label><fmt:message key="label.password"/>:</label>
         <br>
-        <input name="password" type="password" minlength="3" pattern="[a-zA-Z0-9_]{3,}" required/>
+        <input name="password" type="password" minlength="3" maxlength="30" pattern="[a-zA-Z0-9_]{3,30}" required/>
         <br> <br>
         <!--
         <label>Repeat password:</label>
@@ -38,7 +38,7 @@ pageEncoding="UTF-8"%>
         -->
         <label><fmt:message key="label.name"/>:</label>
         <br>
-        <input name="name" type="text" minlength="2" pattern="[.a-zA-ZА-Яа-яҐґЇїІіЄє0-9_\s]{2,}" required/>
+        <input name="name" type="text" minlength="2" maxlength="30" pattern="[.a-zA-ZА-Яа-яҐґЇїІіЄє0-9_\s]{2,30}" required/>
         <br> <br>
         <fmt:message key="label.registercap" var="buttonText"/>
         <input name="submit" type="submit" value="${buttonText}">
@@ -51,5 +51,6 @@ pageEncoding="UTF-8"%>
 <div class="message-bar">
     <h4>If you already have an account, please <a href="signin.jsp">sign-in</a></h4>
 </div>
+
 </body>
 </html>

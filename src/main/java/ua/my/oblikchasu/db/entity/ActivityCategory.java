@@ -36,9 +36,7 @@ public class ActivityCategory extends Entity {
 
     @Override
     public String toString() {
-        return "\r\nActivityCategory{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return "name = " + name +
+                " id = " + id;
     }
 }

@@ -1,6 +1,9 @@
 package ua.my.oblikchasu.servlet;
 
+import org.apache.log4j.Logger;
 import ua.my.oblikchasu.URL;
+import ua.my.oblikchasu.util.LogMsg;
+
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -10,7 +13,7 @@ import java.io.IOException;
 
 @WebFilter(filterName = "1encodingFilter", urlPatterns = "/*")
 public class FilterEncoding implements Filter {
-
+    private static final Logger logger = Logger.getLogger(FilterEncoding.class);
     @Override
     public void init(FilterConfig config) throws ServletException {
         //empty
@@ -26,6 +29,8 @@ public class FilterEncoding implements Filter {
         response.setContentType("text/html; charset=UTF-8");
         if (request.getParameter("sessionLocale") != null) {
             request.getSession().setAttribute("language", request.getParameter("sessionLocale"));
+            request.setAttribute("sessionLocale", null);
+            logger.info(LogMsg.LANGUAGE_SET + request.getSession().getAttribute("language"));
         }
         chain.doFilter(request, response);
 

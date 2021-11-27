@@ -1,0 +1,5 @@
+user login  [_0-9A-Za-z]{3,30}
+user name   [_.0-9A-Za-zА-Яа-яҐґІіЇіЄє\s]{2,30}
+user password   [_0-9A-Za-z]{3,30}
+activity name   [.0-9A-Za-zА-Яа-яҐґІіЇіЄє\s]{3,30}
+activity category name [.0-9A-Za-zА-Яа-яҐґІіЇіЄє\s]{3,30}

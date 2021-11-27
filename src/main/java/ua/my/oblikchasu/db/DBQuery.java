@@ -16,6 +16,8 @@ public abstract class DBQuery {
     public static final String SELECT_ALL_USERS_ACTIVITIES = "SELECT * FROM users_activity";
     public static final String SELECT_USERS_ACTIVITIES_PAGE_BY_ACTIVITY ="select * from users_activity uact inner join activity act on uact.id = act.id order by act.name";
     public static final String SELECT_USERS_ACTIVITY_BY_USER = "SELECT * FROM users_activity WHERE user_id=?";
+    public static final String SELECT_USERS_ACTIVITY_SORTED_BY_ACTIVITY = "select distinct users_activity.* from users_activity inner join activity on users_activity.activity_id = activity.id where user_id = ? order by activity.name ";
+    public static final String SELECT_USERS_ACTIVITY_SORTED_BY_CATEGORY = "select users_activity.* from users_activity left join activity on users_activity.activity_id = activity.id left join category on activity.category_id = category.id where user_id = ? order by category.name ";
     public static final String SELECT_USERS_ACTIVITY_BY_ID = "SELECT * FROM users_activity WHERE id=?";
     public static final String SELECT_USERS_ACTIVITY_BY_ACTIVITY = "SELECT * FROM users_activity WHERE activity_id=?";
     public static final String INSERT_USERS_ACTIVITY = "INSERT INTO users_activity (user_id, activity_id, amount_time) VALUES (?,?,?)";

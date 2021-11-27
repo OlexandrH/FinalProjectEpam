@@ -46,6 +46,80 @@ public class ActivityDAO implements GenericDAO<Activity>{
         }
     }
 
+    public List<Activity> findSortedPortion(String sortBy, int from, int amount, String order) throws DBException {
+        Connection con = null;
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        List<Activity> activities = new LinkedList<>();
+        String sqlString = DBQuery.SELECT_ALL_ACTIVITIES + " "+
+                DBQuery.ORDER_BY + sortBy + " " + order + DBQuery.LIMIT;
+        if("category".equals(sortBy)) {
+            sqlString = "SELECT * FROM activity INNER JOIN category ON category.id = activity.category_id ORDER BY category.name " + order + " " + DBQuery.LIMIT;
+        }
+        if("totalTime".equals(sortBy)) {
+            sqlString = "select activity.id, activity.name, activity_id, category_id, sum(users_activity.amount_time) amount_time from \n" +
+                    "activity left join users_activity on users_activity.activity_id = activity.id \n" +
+                    " group by users_activity.activity_id order by amount_time " + order + DBQuery.LIMIT;
+        }
+
+        if("userCount".equals(sortBy)) {
+            sqlString = "select activity.id, activity.name, activity_id, category_id, count(distinct user_id) userCount from \n" +
+                    "activity left join users_activity on users_activity.activity_id = activity.id \n" +
+                    " group by users_activity.activity_id order by userCount " + order + DBQuery.LIMIT;
+        }
+
+        try {
+            con = ConnectionPool.getConnection();
+            pstmt = con.prepareStatement(sqlString);
+
+            pstmt.setInt(1,from);
+            pstmt.setInt(2,amount);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                activities.add(
+                        new Activity(
+                                rs.getInt("id"),
+                                rs.getString("name"),
+                                new ActivityCategory(rs.getInt("category_id"), null)
+                        )
+                );
+            }
+            return activities;
+        } catch (SQLException throwable) {
+            logger.error(ErrorMsg.ERROR, throwable);
+            throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
+        } finally {
+            closerResultSet(rs);
+            closeStatement(pstmt);
+            closeConnection(con);
+        }
+    }
+
+
+    public int findCount () throws DBException {
+        Connection con = null;
+        ResultSet rs = null;
+        Statement stmt = null;
+        int recordNumber = 0;
+        try {
+            con = ConnectionPool.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT COUNT(*) FROM activity");
+            if (rs.next()) {
+                recordNumber = rs.getInt(1);
+            }
+            return recordNumber;
+        } catch (SQLException throwable) {
+            logger.error(LogMsg.ERROR, throwable);
+            throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
+        } finally {
+            closerResultSet(rs);
+            closeStatement(stmt);
+            closeConnection(con);
+        }
+
+    }
+
     public List<Activity> findByCategory(int categoryId) throws DBException {
         Connection con = null;
         ResultSet rs = null;
@@ -148,7 +222,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
                 activity.setId(rs.getInt(1));
             }
         } catch (SQLException throwable) {
-            logger.info(LogMsg.ACTIVITY_ADD_FAIL + activity.getName());
+            logger.info(LogMsg.ACTIVITY_ADD_FAIL + activity);
             logger.error(LogMsg.ERROR, throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
@@ -156,7 +230,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
             closeStatement(pstmt);
             closeConnection(con);
         }
-        logger.info(LogMsg.ACTIVITY_ADDED + activity.getName());
+        logger.info(LogMsg.ACTIVITY_ADDED + activity);
         return activity;
     }
 
@@ -172,14 +246,14 @@ public class ActivityDAO implements GenericDAO<Activity>{
             pstmt.setInt(2, activity.getCategory().getId());
             pstmt.setInt(3, activity.getId());
             if(pstmt.executeUpdate() == 1) {
-                logger.info(LogMsg.ACTIVITY_UPDATED + activity.getId());
+                logger.info(LogMsg.ACTIVITY_UPDATED + activity);
                 return true;
             } else {
-                logger.error(LogMsg.ACTIVITY_UPDATE_FAIL + activity.getId());
+                logger.error(LogMsg.ACTIVITY_UPDATE_FAIL + activity);
                 return false;
             }
         } catch (SQLException throwable) {
-            logger.error(LogMsg.ACTIVITY_UPDATE_FAIL + activity.getId());
+            logger.error(LogMsg.ACTIVITY_UPDATE_FAIL + activity);
             logger.error(LogMsg.ERROR + throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
@@ -197,14 +271,14 @@ public class ActivityDAO implements GenericDAO<Activity>{
             pstmt = con.prepareStatement(DBQuery.DELETE_ACTIVITY);
             pstmt.setInt(1, activity.getId());
             if(pstmt.executeUpdate() == 1) {
-                logger.info(LogMsg.ACTIVITY_DELETED + activity.getName());
+                logger.info(LogMsg.ACTIVITY_DELETED + activity);
                 return true;
             } else {
-                logger.error(LogMsg.ACTIVITY_DELETE_FAIL + activity.getName());
+                logger.error(LogMsg.ACTIVITY_DELETE_FAIL + activity);
                 return false;
             }
         } catch (SQLException throwable) {
-            logger.error(LogMsg.ACTIVITY_DELETE_FAIL + activity.getName());
+            logger.error(LogMsg.ACTIVITY_DELETE_FAIL + activity);
             logger.error(LogMsg.ERROR, throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {

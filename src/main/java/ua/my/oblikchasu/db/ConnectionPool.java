@@ -15,20 +15,25 @@ import java.sql.SQLException;
 public class ConnectionPool {
     public static final String DS_NAME = "jdbc/mydb";
     private static final Logger logger = Logger.getLogger(ConnectionPool.class);
-    //    private static DataSource ds;
-//    static {
-//        try {
-//            Context initCtx = new InitialContext();
-//            Context envCtx = (Context) initCtx.lookup("java:comp/env");
-//            ds = (DataSource) envCtx.lookup(DS_NAME);
-//        } catch (NamingException e) {
-//            logger.fatal(ErrorMsg.DB_CONN_POOL_ERROR, throwable);
-//        }
-//    }
 
     ConnectionPool instance = null;
     //test datasource to work without server
     private static MysqlDataSource ds;
+
+//        static {
+//        try {
+//            Context initCtx = new InitialContext();
+//            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+//            ds = (MysqlDataSource) envCtx.lookup(DS_NAME);
+//        } catch (NamingException e) {
+//            logger.fatal(ErrorMsg.DB_CONN_POOL_ERROR, e);
+//        }
+//    }
+
+
+
+
+
     static {
             ds = new MysqlDataSource();
             ds.setURL("jdbc:mysql://localhost:3306/mydb?useUnicode=yes&characterEncoding=UTF-8");

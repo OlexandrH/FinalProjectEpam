@@ -25,13 +25,13 @@ public class SignOut extends HttpServlet {
         try {
             response.sendRedirect("index.jsp");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info(LogMsg.ERROR, e);
         }
     }
 
     @Override
     public void doPost (HttpServletRequest request, HttpServletResponse response) {
-
+        //does nothing
     }
 
 }

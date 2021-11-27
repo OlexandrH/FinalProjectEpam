@@ -5,6 +5,8 @@ public class Activity extends Entity{
     private String name;
     private int categoryId;
     private ActivityCategory category;
+    private int userCount=0;
+    private int totalTime=0;
 
     public Activity(int id, String name, ActivityCategory category) {
         this.id = id;
@@ -54,13 +56,27 @@ public class Activity extends Entity{
         this.category = category;
     }
 
+    public int getUserCount() {
+        return userCount;
+    }
+
+    public void setUserCount(int userCount) {
+        this.userCount = userCount;
+    }
+
+    public int getTotalTime() {
+        return totalTime;
+    }
+
+    public void setTotalTime(int totalTime) {
+        this.totalTime = totalTime;
+    }
+
     @Override
     public String toString() {
-        return "\r\nActivity{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                //", categoryId='" + categoryId + '\'' +
-                ", category='" + category + '\'' +
-                '}';
+        return
+                "name = " + name +
+                " id = " + id +
+                " category = " + category;
     }
 }

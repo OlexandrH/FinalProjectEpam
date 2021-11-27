@@ -15,7 +15,7 @@ import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UsersActivityDAO implements GenericDAO<UsersActivity>{
+public class UsersActivityDAO implements GenericDAO<UsersActivity> {
 
     private static final Logger logger = Logger.getLogger(UsersActivityDAO.class);
 
@@ -43,17 +43,128 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity>{
         }
     }
 
+    public int findCountByUser(User user) throws DBException {
+        Connection con = null;
+        ResultSet rs = null;
+        Statement stmt = null;
+        int recordNumber = 0;
+        try {
+            con = ConnectionPool.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT COUNT(*) FROM users_activity WHERE user_id= " + user.getId());
+            if (rs.next()) {
+                recordNumber = rs.getInt(1);
+            }
+            return recordNumber;
+        } catch (SQLException throwable) {
+            logger.error(LogMsg.ERROR, throwable);
+            throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
+        } finally {
+            closerResultSet(rs);
+            closeStatement(stmt);
+            closeConnection(con);
+        }
+
+    }
+
+    public int findCount() throws DBException {
+        Connection con = null;
+        ResultSet rs = null;
+        Statement stmt = null;
+        int recordNumber = 0;
+        try {
+            con = ConnectionPool.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT COUNT(*) FROM users_activity");
+            if (rs.next()) {
+                recordNumber = rs.getInt(1);
+            }
+            return recordNumber;
+        } catch (SQLException throwable) {
+            logger.error(LogMsg.ERROR, throwable);
+            throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
+        } finally {
+            closerResultSet(rs);
+            closeStatement(stmt);
+            closeConnection(con);
+        }
+
+    }
+
+    public int findCountUsersByActivity(Activity activity) throws DBException {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int recordNumber=0;
+        try {
+            con = ConnectionPool.getConnection();
+            pstmt = con.prepareStatement("SELECT COUNT(DISTINCT user_id) from users_activity WHERE activity_id = ?");
+            pstmt.setInt(1, activity.getId());
+            rs = pstmt.executeQuery();
+            if(rs.next()) {
+                recordNumber = rs.getInt(1);
+            }
+        } catch (SQLException throwable) {
+            logger.error(LogMsg.ERROR);
+            throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
+        } finally {
+            closerResultSet(rs);
+            closeStatement(pstmt);
+            closeConnection(con);
+        }
+        return recordNumber;
+    }
+
+    public int findTotalTimeByActivity(Activity activity) throws DBException {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int recordNumber=0;
+        try {
+            con = ConnectionPool.getConnection();
+            pstmt = con.prepareStatement("SELECT SUM(amount_time) from users_activity WHERE activity_id = ?");
+            pstmt.setInt(1, activity.getId());
+            rs = pstmt.executeQuery();
+            if(rs.next()) {
+                recordNumber = rs.getInt(1);
+            }
+        } catch (SQLException throwable) {
+            logger.error(LogMsg.ERROR);
+            throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
+        } finally {
+            closerResultSet(rs);
+            closeStatement(pstmt);
+            closeConnection(con);
+        }
+        return recordNumber;
+    }
+
     public List<UsersActivity> findSortedPortionByUser (User user, String sortBy, int from, int amount, String order) throws DBException {
         Connection con = null;
         ResultSet rs = null;
         PreparedStatement pstmt = null;
+
+        String query = DBQuery.SELECT_USERS_ACTIVITY_BY_USER +
+                DBQuery.ORDER_BY +
+                sortBy + " " +
+                order + DBQuery.LIMIT;
+
+        if(sortBy.equals("activity")) {
+            query = DBQuery.SELECT_USERS_ACTIVITY_SORTED_BY_ACTIVITY +
+                    order +
+                    DBQuery.LIMIT;
+        }
+
+        if(sortBy.equals("category")) {
+            query = DBQuery.SELECT_USERS_ACTIVITY_SORTED_BY_CATEGORY +
+                    order +
+                    DBQuery.LIMIT;
+        }
+
         List<UsersActivity> usersActivities = new LinkedList<>();
         try {
             con = ConnectionPool.getConnection();
-            pstmt = con.prepareStatement(DBQuery.SELECT_USERS_ACTIVITY_BY_USER +
-                    DBQuery.ORDER_BY +
-                    sortBy + " " +
-                    order + DBQuery.LIMIT);
+            pstmt = con.prepareStatement(query);
             pstmt.setInt(1, user.getId());
             pstmt.setInt(2, from);
             pstmt.setInt(3, amount);
@@ -198,9 +309,8 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity>{
                 usersActivity.setId(rs.getInt(1));
             }
         } catch (SQLException throwable) {
-            logger.info(LogMsg.USERS_ACTIVITY_ADD_FAIL +
-                    usersActivity.getUser().getLogin() +
-                    LogMsg.SPACE + usersActivity.getActivity().getName());
+            logger.info(LogMsg.USERS_ACTIVITY_ADD_FAIL + usersActivity);
+
             logger.error(LogMsg.ERROR, throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
@@ -208,10 +318,8 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity>{
             closeStatement(pstmt);
             closeConnection(con);
         }
-        logger.info(LogMsg.USERS_ACTIVITY_ADDED +
-                usersActivity.getUser().getLogin() +
-                LogMsg.SPACE +
-                usersActivity.getActivity().getName());
+        logger.info(LogMsg.USERS_ACTIVITY_ADDED + usersActivity);
+
         return usersActivity;
     }
 
@@ -226,22 +334,15 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity>{
             pstmt.setLong(2, usersActivity.getAmountTime());
             pstmt.setInt(3, usersActivity.getId());
             if(pstmt.executeUpdate() == 1) {
-                logger.info(LogMsg.USERS_ACTIVITY_UPDATED +
-                        usersActivity.getUser().getLogin() +
-                        LogMsg.SPACE +
-                        usersActivity.getActivity().getName());
+                logger.info(LogMsg.USERS_ACTIVITY_UPDATED + usersActivity);
+
                 return true;
             } else {
-                logger.error(LogMsg.USERS_ACTIVITY_UPDATE_FAIL +
-                        usersActivity.getUser().getLogin() +
-                        LogMsg.SPACE +
-                        usersActivity.getActivity().getName());
+                logger.error(LogMsg.USERS_ACTIVITY_UPDATE_FAIL + usersActivity);
                 return false;
             }
         } catch (SQLException throwable) {
-            logger.error(LogMsg.USERS_ACTIVITY_UPDATE_FAIL +
-                    usersActivity.getUser().getLogin() +
-                    LogMsg.SPACE + usersActivity.getActivity().getName());
+            logger.error(LogMsg.USERS_ACTIVITY_UPDATE_FAIL + usersActivity);
             logger.error(LogMsg.ERROR + throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
@@ -259,14 +360,14 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity>{
             pstmt = con.prepareStatement(DBQuery.DELETE_USERS_ACTIVITY);
             pstmt.setInt(1, usersActivity.getId());
             if(pstmt.executeUpdate() == 1) {
-                logger.info(LogMsg.USERS_ACTIVITY_DELETED + usersActivity.getUser().getLogin() + LogMsg.SPACE + usersActivity.getActivity().getName());
+                logger.info(LogMsg.USERS_ACTIVITY_DELETED + usersActivity);
                 return true;
             } else {
-                logger.error(LogMsg.USERS_ACTIVITY_DELETE_FAIL + usersActivity.getUser().getLogin() + LogMsg.SPACE + usersActivity.getActivity().getName());
+                logger.error(LogMsg.USERS_ACTIVITY_DELETE_FAIL + usersActivity);
                 return false;
             }
         } catch (SQLException throwable) {
-            logger.error(LogMsg.USERS_ACTIVITY_DELETE_FAIL + usersActivity.getUser().getLogin() + LogMsg.SPACE + usersActivity.getActivity().getName());
+            logger.error(LogMsg.USERS_ACTIVITY_DELETE_FAIL + usersActivity);
             logger.error(LogMsg.ERROR, throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
@@ -276,15 +377,14 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity>{
     }
 
     private UsersActivity constructUsersActivity (ResultSet rs) throws SQLException {
-        //UsersActivity usersActivity =
+
                 return new UsersActivity(
                 rs.getInt("id"),
                 new User(rs.getInt("user_id")),
                 new Activity(rs.getInt("activity_id")),
                 rs.getLong("amount_time"),
                 UsersActivityStatus.values() [rs.getInt("status")]
-
         );
-        //return usersActivity;
+
     }
 }

@@ -1,14 +1,11 @@
 package ua.my.oblikchasu;
 
-import ua.my.oblikchasu.db.dao.UserDAO;
 import ua.my.oblikchasu.db.dao.UsersActivityDAO;
 import ua.my.oblikchasu.db.entity.User;
-import ua.my.oblikchasu.db.entity.UsersActivity;
 import ua.my.oblikchasu.db.exception.DBException;
 
 import org.apache.log4j.Logger;
 import ua.my.oblikchasu.service.ServiceException;
-import ua.my.oblikchasu.service.UserService;
 import ua.my.oblikchasu.service.UsersActivityService;
 
 public class Tester {
@@ -17,10 +14,11 @@ public class Tester {
 
         UsersActivityDAO usersActivityDAO = new UsersActivityDAO();
         //System.out.println(usersActivityDAO.findSortedPortion("amount_time", 0, 7, "DESC"));
+       // System.out.println(usersActivityDAO.findNumberOfUsersActivitiesByUser(new User(10)));
 
         //UserDAO userDAO = new UserDAO();
         User user = new User(10);
-        System.out.println(new UsersActivityService().getUsersActivitiesPortionByUser(user,"amount_time", 0, 5, "DESC"));
+        System.out.println(new UsersActivityService().getPortionByUser(user,"amount_time", 0, 5, "DESC"));
 //        //System.out.println(userDAO.findSortedPortion("role", 0, 5));
 //        System.out.println(userDAO.findSorted("id"));
 //        //        UsersActivityService uas = new UsersActivityService();

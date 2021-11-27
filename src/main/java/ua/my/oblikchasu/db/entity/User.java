@@ -69,11 +69,10 @@ public class User extends Entity {
 
     @Override
     public String toString() {
-        return "\r\nUser{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", name='" + name + '\'' +
-                ", role=" + role +
-                '}';
+        return
+                " id = " + id +
+                " login = " + login +
+                " name = " + name +
+                " role = " + role;
     }
 }

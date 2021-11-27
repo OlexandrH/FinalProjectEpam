@@ -25,9 +25,7 @@ public class SignIn extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             request.getRequestDispatcher("/signin.jsp").forward(request, response);
-        } catch (ServletException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ServletException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -38,13 +36,14 @@ public class SignIn extends HttpServlet {
         User user = (User) session.getAttribute("user");
         if (user != null) {
             try {
-                if (user.getRole() == UserRole.USER) {
-                    response.sendRedirect("user-page");
-                } else if (user.getRole() == UserRole.ADMIN) {
-                    response.sendRedirect("admin.jsp");
-                }
+                response.sendRedirect((String)session.getAttribute("return"));
             } catch(IOException e) {
-                e.printStackTrace();
+                logger.error(LogMsg.ERROR, e);
+                try {
+                    response.sendRedirect("error.jsp");
+                } catch (IOException ioException) {
+                    logger.error(LogMsg.ERROR);
+                }
             }
         } else {
             String userLogin = request.getParameter("userLogin");
@@ -53,13 +52,15 @@ public class SignIn extends HttpServlet {
             try {
                 if(validateUser(userLogin, userPassword)) {
                     UserService userService = new UserService();
-                    user = userService.getUserByLogin(userLogin);
+                    user = userService.getByLogin(userLogin);
                     session.setAttribute("user", user);
+                    logger.info(LogMsg.SESSION_ASSIGNED_TO_USER + LogMsg.SPACE +session.getId() +LogMsg.SPACE + user.getLogin());
                     if (user.getRole() == UserRole.USER) {
-                        response.sendRedirect("user-page");
+                        session.setAttribute("return", "user-page");
                     } else if (user.getRole() == UserRole.ADMIN) {
-                        response.sendRedirect("admin.jsp");
+                        session.setAttribute("return", "user-list");
                     }
+                    response.sendRedirect((String)session.getAttribute("return"));
                     logger.info(userLogin + LogMsg.SIGNED_IN);
                 } else {
                     request.getRequestDispatcher("/signin.jsp").forward(request, response);
@@ -67,7 +68,7 @@ public class SignIn extends HttpServlet {
                 }
             } catch (ServiceException | IOException | ServletException e) {
                 try {
-                    response.sendRedirect(URL.ERROR);//add message
+                    response.sendRedirect(URL.ERROR);
                 } catch (IOException ex) {
                     logger.error(LogMsg.ERROR, ex);
                 }
@@ -79,7 +80,7 @@ public class SignIn extends HttpServlet {
     private boolean validateUser (String userLogin, String userPassword) throws ServiceException {
         UserService userService = new UserService();
         if(userLogin == null || userPassword == null) return false;
-        User user = userService.getUserByLogin(userLogin);
+        User user = userService.getByLogin(userLogin);
         if(user == null) {
             return false;
         }

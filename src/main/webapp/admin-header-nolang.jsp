@@ -12,10 +12,10 @@
 
 </head>
 
-<!-- Admin header -->
+
        <div class="abc">
             <a href="admin.jsp"> <fmt:message key="label.adminpage"/> </a> &nbsp;
             <a href="signout"> <fmt:message key="label.signout"/> </a> &nbsp;&nbsp;&nbsp;
         </div>
-<!-- -->
+
 

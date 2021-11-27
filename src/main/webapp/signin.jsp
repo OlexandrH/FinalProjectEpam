@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<fmt:setLocale value="${language}"/>
+<fmt:setLocale value="${sessionScope.language}" />
 <fmt:setBundle basename="userinterface"/>
 
 <head>
@@ -13,13 +13,16 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<jsp:include page="welcome-header.jsp"/>
 <body>
+
+<jsp:include page="welcome-header.jsp"/>
 
 <div class="header-bar">
     <h2><fmt:message key="label.sign"/></h2>
 </div>
+
 <br>
+
 <div class="register-form">
     <form action="signin" method="post">
         <h3></h3>
@@ -40,6 +43,8 @@
 <div class="message-bar">
 <h4><fmt:message key="label.noaccount"/> <a href="register.jsp"><fmt:message key="label.register"/></a></h4>
 </div>
+
 </body>
+
 </html>
 

@@ -68,3 +68,22 @@ background-color: lightblue;
     width: 100px;
     display: inline-block;
 }
+
+       table {
+          border-collapse: collapse;
+          width: 50%;
+        }
+
+        th, td {
+          text-align: left;
+          padding: 8px;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+
+        table.center {
+          margin-left: auto;
+          margin-right: auto;
+        }

@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<fmt:setLocale value="${language}"/>
+<fmt:setLocale value="${sessionScope.language}"/>
 <fmt:setBundle basename="userinterface"/>
 
 <head>
@@ -16,8 +16,6 @@
 <body>
 <jsp:include page="welcome-header.jsp"/>
 
-
-<body>
 <div class="header-bar">
     <h2><fmt:message key="label.welcome"/> :)</h2>
 </div>

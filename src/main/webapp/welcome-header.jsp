@@ -3,13 +3,13 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<fmt:setLocale value="${language}"/>
+<fmt:setLocale value="${sessionScope.language}" scope="session"/>
 <fmt:setBundle basename="userinterface"/>
 
-<!-- Admin header -->
+<body>
        <div class="abc">
             &nbsp;
             <a href="?sessionLocale=en">ENG</a>&nbsp;
             <a href="?sessionLocale=ua">УКР</a>&nbsp;
         </div>
-<!-- -->
+</body>

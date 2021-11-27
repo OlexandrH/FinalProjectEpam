@@ -60,13 +60,12 @@ public class UsersActivity extends Entity {
 
     @Override
     public String toString() {
-        return "\r\n" +"\r\nUsersActivity{" +
-                "id=" + id +
-                ", amountTime=" + amountTime +
-                ", status=" + status +
-                ", user=" + user +
-                ", activity=" + activity +
-                '}';
+        return
+                "id = " + id +
+                " user = " + user.getId() + " (" + user.getLogin() + ")" +
+                " activity = " + activity .getId() + " (" + activity.getName() + ")" +
+                " amountTime = " + amountTime + " min" +
+                " status = " + status;
     }
 
 }

@@ -15,12 +15,12 @@ public class UsersActivityService {
     UserService userService = new UserService();
     ActivityService activityService = new ActivityService();
 
-    public UsersActivity getUsersActivityById (int id) throws ServiceException {
+    public UsersActivity getById(int id) throws ServiceException {
         UsersActivity usersActivity = null;
         try {
             usersActivity = usersActivityDAO.findById(id);
-            usersActivity.setUser(userService.getUserById(usersActivity.getUser().getId()));
-            usersActivity.setActivity(activityService.getActivityById(usersActivity.getActivity().getId()));
+            usersActivity.setUser(userService.getById(usersActivity.getUser().getId()));
+            usersActivity.setActivity(activityService.getById(usersActivity.getActivity().getId()));
         } catch (DBException e) {
             logger.error("Error", e);
             throw new ServiceException("Cannot find user's activity", e);
@@ -28,13 +28,13 @@ public class UsersActivityService {
         return usersActivity;
     }
 
-    public List<UsersActivity> getAllUsersActivities () throws ServiceException {
+    public List<UsersActivity> getAll() throws ServiceException {
         List<UsersActivity> usersActivities = new LinkedList<>();
         try {
             usersActivities = usersActivityDAO.findAll();
             for(UsersActivity userAct: usersActivities) {
-                userAct.setUser(userService.getUserById(userAct.getUser().getId()));
-                userAct.setActivity(activityService.getActivityById(userAct.getActivity().getId()));
+                userAct.setUser(userService.getById(userAct.getUser().getId()));
+                userAct.setActivity(activityService.getById(userAct.getActivity().getId()));
             }
 
         } catch (DBException e) {
@@ -44,14 +44,14 @@ public class UsersActivityService {
         return usersActivities;
     }
 
-    public List<UsersActivity> getOneUsersActivities (User user) throws ServiceException {
+    public List<UsersActivity> getByUser(User user) throws ServiceException {
 
         List<UsersActivity> usersActivities = new LinkedList<>();
         try {
             usersActivities = usersActivityDAO.findByUser(user);
             for(UsersActivity userAct: usersActivities) {
-                userAct.setUser(userService.getUserById(userAct.getUser().getId()));
-                userAct.setActivity(activityService.getActivityById(userAct.getActivity().getId()));
+                userAct.setUser(userService.getById(userAct.getUser().getId()));
+                userAct.setActivity(activityService.getById(userAct.getActivity().getId()));
             }
 
         } catch (DBException e) {
@@ -61,14 +61,48 @@ public class UsersActivityService {
         return usersActivities;
     }
 
-    public List<UsersActivity> getUsersActivitiesPortionByUser (User user, String sortedBy, int from, int amount, String order) throws ServiceException {
+    public int getCountByUser (User user) throws ServiceException {
+
+       int count = 0;
+        try {
+            count = usersActivityDAO.findCountByUser(user);
+        } catch (DBException e) {
+            logger.error("Error", e);
+            throw new ServiceException("Cannot find user's activity", e);
+        }
+        return count;
+    }
+
+    public int getCount () throws ServiceException {
+        int count = 0;
+        try {
+            count = usersActivityDAO.findCount();
+        } catch (DBException e) {
+            logger.error("Error", e);
+            throw new ServiceException("Cannot find user's activity", e);
+        }
+        return count;
+    }
+
+    public int getCountUsersByActivity (Activity activity) throws ServiceException {
+        int count = 0;
+        try {
+            count = usersActivityDAO.findCountUsersByActivity(activity);
+        }  catch (DBException e) {
+        logger.error("Error", e);
+        throw new ServiceException("Cannot find user's activity", e);
+        }
+        return count;
+    }
+
+    public List<UsersActivity> getByUserByActivity(User user, String sortedBy, int from, int amount, String order) throws ServiceException {
 
         List<UsersActivity> usersActivities = new LinkedList<>();
         try {
             usersActivities = usersActivityDAO.findSortedPortionByUser(user, sortedBy, from, amount, order);
             for(UsersActivity userAct: usersActivities) {
-                userAct.setUser(userService.getUserById(userAct.getUser().getId()));
-                userAct.setActivity(activityService.getActivityById(userAct.getActivity().getId()));
+                userAct.setUser(userService.getById(userAct.getUser().getId()));
+                userAct.setActivity(activityService.getById(userAct.getActivity().getId()));
             }
 
         } catch (DBException e) {
@@ -78,14 +112,32 @@ public class UsersActivityService {
         return usersActivities;
     }
 
-    public List<UsersActivity> getUsersActivitiesByActivity (Activity activity) throws ServiceException {
+
+    public List<UsersActivity> getPortionByUser(User user, String sortedBy, int from, int amount, String order) throws ServiceException {
+
+        List<UsersActivity> usersActivities = new LinkedList<>();
+        try {
+            usersActivities = usersActivityDAO.findSortedPortionByUser(user, sortedBy, from, amount, order);
+            for(UsersActivity userAct: usersActivities) {
+                userAct.setUser(userService.getById(userAct.getUser().getId()));
+                userAct.setActivity(activityService.getById(userAct.getActivity().getId()));
+            }
+
+        } catch (DBException e) {
+            logger.error("Error", e);
+            throw new ServiceException("Cannot find user's activity", e);
+        }
+        return usersActivities;
+    }
+
+    public List<UsersActivity> getByActivity(Activity activity) throws ServiceException {
 
         List<UsersActivity> usersActivities = new LinkedList<>();
         try {
             usersActivities = usersActivityDAO.findByActivity(activity);
             for(UsersActivity userAct: usersActivities) {
-                userAct.setUser(userService.getUserById(userAct.getUser().getId()));
-                userAct.setActivity(activityService.getActivityById(userAct.getActivity().getId()));
+                userAct.setUser(userService.getById(userAct.getUser().getId()));
+                userAct.setActivity(activityService.getById(userAct.getActivity().getId()));
             }
 
         } catch (DBException e) {
@@ -95,7 +147,7 @@ public class UsersActivityService {
         return usersActivities;
     }
 
-    public List<UsersActivity> getUsersActivitiesByStatus (UsersActivityStatus status) throws ServiceException {
+    public List<UsersActivity> getByStatus(UsersActivityStatus status) throws ServiceException {
 
         List<UsersActivity> usersActivities = null;
         try {
@@ -104,8 +156,8 @@ public class UsersActivityService {
                     .filter((usersActivity) -> usersActivity.getStatus() == status)
                     .collect(Collectors.toList());
             for(UsersActivity userAct: usersActivities) {
-                userAct.setUser(userService.getUserById(userAct.getUser().getId()));
-                userAct.setActivity(activityService.getActivityById(userAct.getActivity().getId()));
+                userAct.setUser(userService.getById(userAct.getUser().getId()));
+                userAct.setActivity(activityService.getById(userAct.getActivity().getId()));
             }
 
         } catch (DBException e) {
@@ -115,7 +167,7 @@ public class UsersActivityService {
         return usersActivities;
     }
 
-    public UsersActivity addUsersActivity (UsersActivity activity) throws ServiceException {
+    public UsersActivity add(UsersActivity activity) throws ServiceException {
         UsersActivity addedUsersActivity = null;
         try {
             addedUsersActivity = usersActivityDAO.create(activity);
@@ -126,7 +178,7 @@ public class UsersActivityService {
         return addedUsersActivity;
     }
 
-    public boolean updateUsersActivity (UsersActivity usersActivity) throws ServiceException {
+    public boolean update(UsersActivity usersActivity) throws ServiceException {
         try {
             return usersActivityDAO.update(usersActivity);
         } catch (DBException e) {
@@ -135,7 +187,7 @@ public class UsersActivityService {
         }
     }
 
-    public boolean deleteUsersActivity (UsersActivity usersActivity) throws ServiceException {
+    public boolean delete(UsersActivity usersActivity) throws ServiceException {
         try {
             return usersActivityDAO.delete(usersActivity);
         } catch (DBException e) {

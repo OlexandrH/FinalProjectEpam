@@ -17,7 +17,7 @@ public class UserService {
     UserDAO userDAO = new UserDAO();
     User user = null;
 
-    public User getUserById(int id) throws ServiceException {
+    public User getById(int id) throws ServiceException {
         try {
             user = userDAO.findById(id);
         } catch (DBException e) {
@@ -27,7 +27,7 @@ public class UserService {
         return user;
     }
 
-    public User getUserByLogin(String login) throws ServiceException {
+    public User getByLogin(String login) throws ServiceException {
         User user = null;
         try {
             user = userDAO.findByLogin(login);
@@ -38,7 +38,7 @@ public class UserService {
         return user;
     }
 
-    public User getUserByName(String name) throws ServiceException {
+    public User getByName(String name) throws ServiceException {
         User user = null;
         try {
             user = userDAO.findByLogin(name);
@@ -49,7 +49,7 @@ public class UserService {
         return user;
     }
 
-    public List<User> getAllUsers() throws ServiceException {
+    public List<User> getAll() throws ServiceException {
         List<User> allUsers = new LinkedList<>();
         try {
             allUsers = userDAO.findAll();
@@ -60,10 +60,22 @@ public class UserService {
         return allUsers;
     }
 
-    public List<User> getSortedPortionUsers(String sortedBy, int from, int amount) throws ServiceException {
+    public int getCount() throws ServiceException {
+        int count = 0;
+        try {
+            count = userDAO.findCount();
+        } catch (DBException e) {
+            logger.error("Error", e);
+            throw new ServiceException("Cannot find user", e);
+        }
+        return count;
+    }
+
+
+    public List<User> getSortedPortion(String sortedBy, int from, int amount, String order) throws ServiceException {
         List<User> users = new LinkedList<>();
         try {
-            users = userDAO.findSortedPortion(sortedBy, from, amount);
+            users = userDAO.findSortedPortion(sortedBy, from, amount, order);
         } catch (DBException e) {
             logger.error("Error", e);
             throw new ServiceException("Cannot find user", e);
@@ -71,7 +83,7 @@ public class UserService {
         return users;
     }
 
-    public List<User> getUsersByRole(UserRole role) throws ServiceException {
+    public List<User> getByRole(UserRole role) throws ServiceException {
         List<User> allUsers = new LinkedList<>();
         try {
             allUsers = userDAO.findAll();
@@ -85,7 +97,7 @@ public class UserService {
         return allUsers;
     }
 
-    public boolean changeUserPassword (User user, String newPassword) throws ServiceException {
+    public boolean changePassword(User user, String newPassword) throws ServiceException {
         try {
             String encryptedPassword = Encryptor.encryptPassword(user.getLogin(), newPassword);
             user.setPassword(encryptedPassword);
@@ -96,7 +108,7 @@ public class UserService {
         }
     }
 
-    public boolean changeUserName (User user, String newName) throws ServiceException {
+    public boolean changeName(User user, String newName) throws ServiceException {
         user.setName(newName);
         try {
             return userDAO.update(user);
@@ -106,7 +118,7 @@ public class UserService {
         }
     }
 
-    public User addUser (User user) throws ServiceException {
+    public User add(User user) throws ServiceException {
         User createdUser = null;
         try {
             createdUser = userDAO.create(user);
@@ -117,7 +129,7 @@ public class UserService {
         return createdUser;
     }
 
-    public boolean updateUser (User user) throws ServiceException {
+    public boolean update(User user) throws ServiceException {
         try {
             return userDAO.update(user);
         } catch (DBException e) {
@@ -127,7 +139,7 @@ public class UserService {
     }
 
 
-    public boolean deleteUser (User user) throws ServiceException {
+    public boolean delete(User user) throws ServiceException {
         try {
             return userDAO.delete(user);
         } catch (DBException e) {

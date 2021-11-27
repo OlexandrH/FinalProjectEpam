@@ -34,11 +34,65 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
             }
             return activityCategories;
         } catch (SQLException throwable) {
-            logger.error("Error", throwable);
+            logger.error(ErrorMsg.ERROR, throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
             closerResultSet(rs);
             closeStatement(stmt);
+            closeConnection(con);
+        }
+    }
+
+    public int findCount () throws DBException {
+        Connection con = null;
+        ResultSet rs = null;
+        Statement stmt = null;
+        int recordNumber = 0;
+        try {
+            con = ConnectionPool.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT COUNT(*) FROM category");
+            if (rs.next()) {
+                recordNumber = rs.getInt(1);
+            }
+            return recordNumber;
+        } catch (SQLException throwable) {
+            logger.error(LogMsg.ERROR, throwable);
+            throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
+        } finally {
+            closerResultSet(rs);
+            closeStatement(stmt);
+            closeConnection(con);
+        }
+    }
+
+    public List<ActivityCategory> findSortedPortion(String sortBy, int from, int amount, String order) throws DBException {
+        Connection con = null;
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        List<ActivityCategory> activityCategories = new LinkedList<>();
+        try {
+            con = ConnectionPool.getConnection();
+            pstmt = con.prepareStatement(DBQuery.SELECT_ALL_CATEGORIES +
+                    DBQuery.ORDER_BY + sortBy + " " + order + DBQuery.LIMIT);
+            pstmt.setInt(1, from);
+            pstmt.setInt(2, amount);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                activityCategories.add(
+                        new ActivityCategory(
+                                rs.getInt("id"),
+                                rs.getString("name")
+                        )
+                );
+            }
+            return activityCategories;
+        } catch (SQLException throwable) {
+            logger.error(ErrorMsg.ERROR, throwable);
+            throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
+        } finally {
+            closerResultSet(rs);
+            closeStatement(pstmt);
             closeConnection(con);
         }
     }
@@ -62,7 +116,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
             }
             return activityCategory;
         } catch (SQLException throwable) {
-            logger.error("Error", throwable);
+            logger.error(ErrorMsg.ERROR, throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
             closerResultSet(rs);
@@ -90,7 +144,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
             }
             return activityCategory;
         } catch (SQLException throwable) {
-            logger.error("Error", throwable);
+            logger.error(ErrorMsg.ERROR, throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
             closerResultSet(rs);
@@ -114,7 +168,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
                 activityCategory.setId(rs.getInt(1));
             }
         } catch (SQLException throwable) {
-            logger.info(LogMsg.ACTIVITY_CATEGORY_ADD_FAIL + activityCategory.getName());
+            logger.info(LogMsg.ACTIVITY_CATEGORY_ADD_FAIL + activityCategory);
             logger.error(LogMsg.ERROR, throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
@@ -122,7 +176,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
             closeStatement(pstmt);
             closeConnection(con);
         }
-        logger.info(LogMsg.ACTIVITY_CATEGORY_ADDED + activityCategory.getName());
+        logger.info(LogMsg.ACTIVITY_CATEGORY_ADDED + activityCategory);
         return activityCategory;
     }
 
@@ -136,14 +190,14 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
             pstmt.setString(1, activityCategory.getName());
             pstmt.setInt(2, activityCategory.getId());
             if(pstmt.executeUpdate() == 1) {
-                logger.info(LogMsg.ACTIVITY_CATEGORY_UPDATED + activityCategory.getId());
+                logger.info(LogMsg.ACTIVITY_CATEGORY_UPDATED + activityCategory);
                 return true;
             } else {
-                logger.error(LogMsg.ACTIVITY_CATEGORY_UPDATE_FAIL + activityCategory.getId());
+                logger.error(LogMsg.ACTIVITY_CATEGORY_UPDATE_FAIL + activityCategory);
                 return false;
             }
         } catch (SQLException throwable) {
-            logger.error(LogMsg.ACTIVITY_CATEGORY_UPDATE_FAIL + activityCategory.getId());
+            logger.error(LogMsg.ACTIVITY_CATEGORY_UPDATE_FAIL + activityCategory);
             logger.error(LogMsg.ERROR + throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {
@@ -161,14 +215,14 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
             pstmt = con.prepareStatement(DBQuery.DELETE_CATEGORY);
             pstmt.setInt(1, activityCategory.getId());
             if(pstmt.executeUpdate() == 1) {
-                logger.info(LogMsg.ACTIVITY_CATEGORY_DELETED + activityCategory.getName());
+                logger.info(LogMsg.ACTIVITY_CATEGORY_DELETED + activityCategory);
                 return true;
             } else {
-                logger.error(LogMsg.ACTIVITY_CATEGORY_DELETE_FAIL + activityCategory.getName());
+                logger.error(LogMsg.ACTIVITY_CATEGORY_DELETE_FAIL + activityCategory);
                 return false;
             }
         } catch (SQLException throwable) {
-            logger.error(LogMsg.ACTIVITY_CATEGORY_DELETE_FAIL + activityCategory.getName());
+            logger.error(LogMsg.ACTIVITY_CATEGORY_DELETE_FAIL + activityCategory);
             logger.error(LogMsg.ERROR, throwable);
             throw new DBException(ErrorMsg.DB_CONN_ERROR, throwable);
         } finally {

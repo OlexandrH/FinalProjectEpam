@@ -7,7 +7,7 @@ public abstract class URL {
     public static final String REGISTER = "register.jsp";
     public static final String USER_PAGE = "user.jsp";
     public static final String ADMIN_PAGE = "admin.jsp";
-    public static final String ERROR = "error.jsp.html";
+    public static final String ERROR = "error.jsp";
 
 }
 
