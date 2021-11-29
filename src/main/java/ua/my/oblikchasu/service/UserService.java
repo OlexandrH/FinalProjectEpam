@@ -5,9 +5,6 @@ import ua.my.oblikchasu.db.dao.UserDAO;
 import ua.my.oblikchasu.db.entity.User;
 import ua.my.oblikchasu.db.entity.UserRole;
 import ua.my.oblikchasu.db.exception.DBException;
-import ua.my.oblikchasu.util.Encryptor;
-
-import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,8 +18,8 @@ public class UserService {
         try {
             user = userDAO.findById(id);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USER_CANNOT_FIND, e);
         }
         return user;
     }
@@ -32,8 +29,8 @@ public class UserService {
         try {
             user = userDAO.findByLogin(login);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USER_CANNOT_FIND, e);
         }
         return user;
     }
@@ -43,8 +40,8 @@ public class UserService {
         try {
             user = userDAO.findByLogin(name);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USER_CANNOT_FIND, e);
         }
         return user;
     }
@@ -54,8 +51,8 @@ public class UserService {
         try {
             allUsers = userDAO.findAll();
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USER_CANNOT_FIND, e);
         }
         return allUsers;
     }
@@ -65,8 +62,8 @@ public class UserService {
         try {
             count = userDAO.findCount();
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USER_CANNOT_FIND, e);
         }
         return count;
     }
@@ -77,8 +74,8 @@ public class UserService {
         try {
             users = userDAO.findSortedPortion(sortedBy, from, amount, order);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CANNOT_FIND, e);
         }
         return users;
     }
@@ -88,8 +85,8 @@ public class UserService {
         try {
             allUsers = userDAO.findAll();
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USER_CANNOT_FIND, e);
         }
         allUsers = allUsers.stream()
                 .filter((user) -> user.getRole() == role)
@@ -97,34 +94,13 @@ public class UserService {
         return allUsers;
     }
 
-    public boolean changePassword(User user, String newPassword) throws ServiceException {
-        try {
-            String encryptedPassword = Encryptor.encryptPassword(user.getLogin(), newPassword);
-            user.setPassword(encryptedPassword);
-            return userDAO.update(user);
-        } catch (NoSuchAlgorithmException | DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot change user password", e);
-        }
-    }
-
-    public boolean changeName(User user, String newName) throws ServiceException {
-        user.setName(newName);
-        try {
-            return userDAO.update(user);
-        } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot change user name", e);
-        }
-    }
-
     public User add(User user) throws ServiceException {
         User createdUser = null;
         try {
             createdUser = userDAO.create(user);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot add user", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USER_CANNOT_ADD, e);
         }
         return createdUser;
     }
@@ -133,8 +109,8 @@ public class UserService {
         try {
             return userDAO.update(user);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot update user", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USER_CANNOT_UPDATE, e);
         }
     }
 
@@ -143,8 +119,8 @@ public class UserService {
         try {
             return userDAO.delete(user);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot delete user", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USER_CANNOT_DELETE, e);
         }
     }
 }

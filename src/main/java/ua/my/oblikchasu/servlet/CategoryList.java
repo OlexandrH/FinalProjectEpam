@@ -102,6 +102,9 @@ public class CategoryList extends HttpServlet {
         }
     }
 
+    /**
+     * If specified parameter of request is not null it's value is stored in the session attribute with the same name and returned
+     */
     private String assignStringSessionAttribute (HttpSession session, HttpServletRequest request, String name) {
         String param = request.getParameter(name);
         if(param != null) {

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class DBQuery {
+    private DBQuery () {}
     public static final String SELECT_ALL_USERS = "SELECT * FROM user";
     public static final String SELECT_USER_BY_ID = "SELECT * FROM user WHERE id=?";
     public static final String SELECT_USER_BY_LOGIN = "SELECT * FROM user WHERE login= ?";

@@ -4,10 +4,9 @@ import org.apache.log4j.Logger;
 import ua.my.oblikchasu.db.dao.UsersActivityDAO;
 import ua.my.oblikchasu.db.entity.*;
 import ua.my.oblikchasu.db.exception.DBException;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class UsersActivityService {
     private static final Logger logger = Logger.getLogger(UsersActivityService.class);
@@ -22,8 +21,8 @@ public class UsersActivityService {
             usersActivity.setUser(userService.getById(usersActivity.getUser().getId()));
             usersActivity.setActivity(activityService.getById(usersActivity.getActivity().getId()));
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user's activity", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_DELETE, e);
         }
         return usersActivity;
     }
@@ -38,8 +37,8 @@ public class UsersActivityService {
             }
 
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user's activity", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_DELETE, e);
         }
         return usersActivities;
     }
@@ -55,8 +54,8 @@ public class UsersActivityService {
             }
 
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user's activity", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_FIND, e);
         }
         return usersActivities;
     }
@@ -67,8 +66,8 @@ public class UsersActivityService {
         try {
             count = usersActivityDAO.findCountByUser(user);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user's activity", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_FIND, e);
         }
         return count;
     }
@@ -78,8 +77,8 @@ public class UsersActivityService {
         try {
             count = usersActivityDAO.findCount();
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user's activity", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_FIND, e);
         }
         return count;
     }
@@ -89,29 +88,11 @@ public class UsersActivityService {
         try {
             count = usersActivityDAO.findCountUsersByActivity(activity);
         }  catch (DBException e) {
-        logger.error("Error", e);
-        throw new ServiceException("Cannot find user's activity", e);
+        logger.error(ErrorMsg.ERROR, e);
+        throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_FIND, e);
         }
         return count;
     }
-
-    public List<UsersActivity> getByUserByActivity(User user, String sortedBy, int from, int amount, String order) throws ServiceException {
-
-        List<UsersActivity> usersActivities = new LinkedList<>();
-        try {
-            usersActivities = usersActivityDAO.findSortedPortionByUser(user, sortedBy, from, amount, order);
-            for(UsersActivity userAct: usersActivities) {
-                userAct.setUser(userService.getById(userAct.getUser().getId()));
-                userAct.setActivity(activityService.getById(userAct.getActivity().getId()));
-            }
-
-        } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user's activity", e);
-        }
-        return usersActivities;
-    }
-
 
     public List<UsersActivity> getPortionByUser(User user, String sortedBy, int from, int amount, String order) throws ServiceException {
 
@@ -124,8 +105,8 @@ public class UsersActivityService {
             }
 
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user's activity", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_FIND, e);
         }
         return usersActivities;
     }
@@ -141,28 +122,8 @@ public class UsersActivityService {
             }
 
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user's activity", e);
-        }
-        return usersActivities;
-    }
-
-    public List<UsersActivity> getByStatus(UsersActivityStatus status) throws ServiceException {
-
-        List<UsersActivity> usersActivities = null;
-        try {
-            usersActivities = usersActivityDAO.findAll();
-            usersActivities = usersActivities.stream()
-                    .filter((usersActivity) -> usersActivity.getStatus() == status)
-                    .collect(Collectors.toList());
-            for(UsersActivity userAct: usersActivities) {
-                userAct.setUser(userService.getById(userAct.getUser().getId()));
-                userAct.setActivity(activityService.getById(userAct.getActivity().getId()));
-            }
-
-        } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user's activity", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_FIND, e);
         }
         return usersActivities;
     }
@@ -172,8 +133,8 @@ public class UsersActivityService {
         try {
             addedUsersActivity = usersActivityDAO.create(activity);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot add user's activity", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_ADD, e);
         }
         return addedUsersActivity;
     }
@@ -182,8 +143,8 @@ public class UsersActivityService {
         try {
             return usersActivityDAO.update(usersActivity);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot update user's activity", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_UPDATE, e);
         }
     }
 
@@ -191,8 +152,8 @@ public class UsersActivityService {
         try {
             return usersActivityDAO.delete(usersActivity);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot delete user's activity", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_DELETE, e);
         }
     }
 

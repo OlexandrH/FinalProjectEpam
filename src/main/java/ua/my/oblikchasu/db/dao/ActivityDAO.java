@@ -2,7 +2,7 @@ package ua.my.oblikchasu.db.dao;
 
 import org.apache.log4j.Logger;
 import ua.my.oblikchasu.util.LogMsg;
-import ua.my.oblikchasu.db.ConnectionPool;
+import ua.my.oblikchasu.db.DBService;
 import ua.my.oblikchasu.db.entity.Activity;
 import ua.my.oblikchasu.db.entity.ActivityCategory;
 import ua.my.oblikchasu.db.exception.DBException;
@@ -23,7 +23,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         Statement stmt = null;
         List<Activity> activities = new LinkedList<>();
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery(DBQuery.SELECT_ALL_ACTIVITIES);
             while (rs.next()) {
@@ -69,7 +69,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         }
 
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(sqlString);
 
             pstmt.setInt(1,from);
@@ -102,7 +102,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         Statement stmt = null;
         int recordNumber = 0;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery("SELECT COUNT(*) FROM activity");
             if (rs.next()) {
@@ -126,7 +126,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         PreparedStatement pstmt = null;
         List<Activity> activities = new LinkedList<>();
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_ACTIVITIES_BY_CATEGORY);
             pstmt.setInt(1, categoryId);
             rs = pstmt.executeQuery();
@@ -155,7 +155,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
             PreparedStatement pstmt = null;
             Activity activity = null;
             try {
-                con = ConnectionPool.getConnection();
+                con = DBService.getConnection();
                 pstmt = con.prepareStatement(DBQuery.SELECT_ACTIVITY_BY_ID);
                 pstmt.setInt(1, id);
                 rs = pstmt.executeQuery();
@@ -184,7 +184,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         PreparedStatement pstmt = null;
         Activity activity = null;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_ACTIVITY_BY_NAME);
             pstmt.setString(1, name);
             rs = pstmt.executeQuery();
@@ -212,7 +212,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.INSERT_ACTIVITY, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, activity.getName());
             pstmt.setInt(2, activity.getCategory().getId());
@@ -240,7 +240,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         PreparedStatement pstmt = null;
 
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.UPDATE_ACTIVITY);
             pstmt.setString(1, activity.getName());
             pstmt.setInt(2, activity.getCategory().getId());
@@ -267,7 +267,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.DELETE_ACTIVITY);
             pstmt.setInt(1, activity.getId());
             if(pstmt.executeUpdate() == 1) {

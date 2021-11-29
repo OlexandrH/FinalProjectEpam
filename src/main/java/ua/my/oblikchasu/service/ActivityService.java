@@ -6,7 +6,6 @@ import ua.my.oblikchasu.db.dao.ActivityDAO;
 import ua.my.oblikchasu.db.dao.UsersActivityDAO;
 import ua.my.oblikchasu.db.entity.Activity;
 import ua.my.oblikchasu.db.entity.ActivityCategory;
-import ua.my.oblikchasu.db.entity.UsersActivity;
 import ua.my.oblikchasu.db.exception.DBException;
 import ua.my.oblikchasu.util.LogMsg;
 
@@ -25,8 +24,8 @@ public class ActivityService {
             ActivityCategory activityCategory = new ActivityCategoryDAO().findById(activity.getCategory().getId());
             activity.setCategory(activityCategory);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find activity", e);
+            logger.error(ErrorMsg.ERROR , e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CANNOT_FIND, e);
         }
         return activity;
     }
@@ -40,8 +39,8 @@ public class ActivityService {
                 activity.setCategory(activityCategory);
             }
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find activity", e);
+            logger.error(LogMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CANNOT_FIND, e);
         }
         return activity;
     }
@@ -56,8 +55,8 @@ public class ActivityService {
                 a.setCategory(activityCategoryDAO.findById(a.getCategory().getId()));
             }
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find activity", e);
+            logger.error(LogMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CANNOT_FIND, e);
         }
         return activities;
     }
@@ -75,7 +74,7 @@ public class ActivityService {
             }
         } catch (DBException e) {
             logger.error(LogMsg.ERROR, e);
-            throw new ServiceException("Cannon find activity", e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CANNOT_FIND, e);
         }
             return activities;
     }
@@ -84,8 +83,8 @@ public class ActivityService {
         try {
             count = activityDAO.findCount();
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user's activity", e);
+            logger.error(LogMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CANNOT_FIND, e);
         }
         return count;
     }
@@ -103,8 +102,8 @@ public class ActivityService {
                 a.setCategory(activityCategory);
             }
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find activity", e);
+            logger.error(LogMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CANNOT_FIND, e);
         }
         return activities;
     }
@@ -114,8 +113,8 @@ public class ActivityService {
         try {
             addedActivity = activityDAO.create(activity);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot add activity", e);
+            logger.error(LogMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CANNOT_ADD, e);
         }
         return addedActivity;
     }
@@ -124,8 +123,8 @@ public class ActivityService {
         try {
             return activityDAO.update(activity);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot update activity", e);
+            logger.error(LogMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CANNOT_UPDATE, e);
         }
     }
 
@@ -133,8 +132,8 @@ public class ActivityService {
         try {
             return activityDAO.delete(activity);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot delete activity", e);
+            logger.error(LogMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CANNOT_DELETE, e);
         }
     }
 }

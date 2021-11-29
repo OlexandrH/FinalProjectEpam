@@ -2,21 +2,16 @@ package ua.my.oblikchasu.db;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.apache.log4j.Logger;
-import ua.my.oblikchasu.db.dao.ActivityCategoryDAO;
-import ua.my.oblikchasu.db.exception.ErrorMsg;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionPool {
+public class DBService {
     public static final String DS_NAME = "jdbc/mydb";
-    private static final Logger logger = Logger.getLogger(ConnectionPool.class);
+    private static final Logger logger = Logger.getLogger(DBService.class);
 
-    ConnectionPool instance = null;
+    DBService instance = null;
     //test datasource to work without server
     private static MysqlDataSource ds;
 
@@ -30,17 +25,13 @@ public class ConnectionPool {
 //        }
 //    }
 
-
-
-
-
     static {
             ds = new MysqlDataSource();
             ds.setURL("jdbc:mysql://localhost:3306/mydb?useUnicode=yes&characterEncoding=UTF-8");
             ds.setUser("root");
             ds.setPassword("root");
     }
-    private ConnectionPool () {
+    private DBService() {
         //Empty constructor
     }
 
@@ -49,14 +40,4 @@ public class ConnectionPool {
         return con;
     }
 
-    public static void main(String[] args) throws SQLException {
-        System.out.println(getConnection());
-    }
-
-    public synchronized ConnectionPool getInstance () {
-        if(instance == null) {
-            instance = new ConnectionPool();
-        }
-        return instance;
-    }
 }

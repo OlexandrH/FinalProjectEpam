@@ -15,9 +15,11 @@ public interface GenericDAO <T extends Entity>{
 
     Logger logger = Logger.getLogger(GenericDAO.class);
     List<T> findAll() throws DBException;
+    List<T> findSortedPortion(String sortBy, int from , int amount, String order) throws DBException;
     T findByName (String name) throws  DBException;
     T findById(int id) throws DBException;
     T create (T entity) throws DBException;
+
     boolean update(T entity) throws DBException;
     boolean delete(T entity) throws DBException;
 

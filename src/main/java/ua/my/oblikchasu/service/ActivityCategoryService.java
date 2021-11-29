@@ -4,8 +4,6 @@ import org.apache.log4j.Logger;
 import ua.my.oblikchasu.db.dao.ActivityCategoryDAO;
 import ua.my.oblikchasu.db.entity.ActivityCategory;
 import ua.my.oblikchasu.db.exception.DBException;
-import ua.my.oblikchasu.db.exception.ErrorMsg;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,7 +17,7 @@ public class ActivityCategoryService {
             activityCategory = activityCategoryDAO.findById(id);
         } catch (DBException e) {
             logger.error(ErrorMsg.ERROR, e);
-            throw new ServiceException("Cannot find activity category", e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CATEGORY_CANNOT_FIND, e);
         }
         return activityCategory;
     }
@@ -30,7 +28,7 @@ public class ActivityCategoryService {
             activityCategory = activityCategoryDAO.findByName(name);
         } catch (DBException e) {
             logger.error(ErrorMsg.ERROR, e);
-            throw new ServiceException("Cannot find activity category", e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CATEGORY_CANNOT_FIND, e);
         }
         return activityCategory;
     }
@@ -41,7 +39,7 @@ public class ActivityCategoryService {
             activityCategories = activityCategoryDAO.findAll();
         } catch (DBException e) {
             logger.error(ErrorMsg.ERROR, e);
-            throw new ServiceException("Cannot find activity category", e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CATEGORY_CANNOT_FIND, e);
         }
         return activityCategories;
     }
@@ -52,7 +50,7 @@ public class ActivityCategoryService {
             activityCategories = activityCategoryDAO.findSortedPortion(sortBy, from, amount, order);
         } catch (DBException e) {
             logger.error(ErrorMsg.ERROR, e);
-            throw new ServiceException("Cannot find activity category", e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CATEGORY_CANNOT_FIND, e);
         }
         return activityCategories;
     }
@@ -63,8 +61,8 @@ public class ActivityCategoryService {
         try {
             count = activityCategoryDAO.findCount();
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot find user's activity", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CATEGORY_CANNOT_FIND, e);
         }
         return count;
     }
@@ -74,8 +72,8 @@ public class ActivityCategoryService {
         try {
             addedActivityCategory = activityCategoryDAO.create(activityCategory);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot add activity category", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CATEGORY_CANNOT_ADD, e);
         }
         return addedActivityCategory;
     }
@@ -84,8 +82,8 @@ public class ActivityCategoryService {
         try {
             return activityCategoryDAO.update(activityCategory);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot update activity category", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CATEGORY_CANNOT_UPDATE, e);
         }
     }
 
@@ -93,8 +91,8 @@ public class ActivityCategoryService {
         try {
             return activityCategoryDAO.delete(activityCategory);
         } catch (DBException e) {
-            logger.error("Error", e);
-            throw new ServiceException("Cannot delete activity category", e);
+            logger.error(ErrorMsg.ERROR, e);
+            throw new ServiceException(ErrorMsg.ACTIVITY_CATEGORY_CANNOT_DELETE, e);
         }
     }
 }

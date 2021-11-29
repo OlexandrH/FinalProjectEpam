@@ -2,7 +2,7 @@ package ua.my.oblikchasu.db.dao;
 
 import org.apache.log4j.Logger;
 import ua.my.oblikchasu.util.LogMsg;
-import ua.my.oblikchasu.db.ConnectionPool;
+import ua.my.oblikchasu.db.DBService;
 import ua.my.oblikchasu.db.entity.*;
 import ua.my.oblikchasu.db.exception.DBException;
 import ua.my.oblikchasu.db.exception.ErrorMsg;
@@ -21,7 +21,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         Statement stmt = null;
         List<ActivityCategory> activityCategories = new LinkedList<>();
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery(DBQuery.SELECT_ALL_CATEGORIES);
             while (rs.next()) {
@@ -49,7 +49,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         Statement stmt = null;
         int recordNumber = 0;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery("SELECT COUNT(*) FROM category");
             if (rs.next()) {
@@ -72,7 +72,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         PreparedStatement pstmt = null;
         List<ActivityCategory> activityCategories = new LinkedList<>();
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_ALL_CATEGORIES +
                     DBQuery.ORDER_BY + sortBy + " " + order + DBQuery.LIMIT);
             pstmt.setInt(1, from);
@@ -104,7 +104,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         PreparedStatement pstmt = null;
         ActivityCategory activityCategory = null;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_CATEGORY_BY_NAME);
             pstmt.setString(1, name);
             rs = pstmt.executeQuery();
@@ -132,7 +132,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         PreparedStatement pstmt = null;
         ActivityCategory activityCategory = null;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_CATEGORY_BY_ID);
             pstmt.setInt(1, id);
             rs = pstmt.executeQuery();
@@ -159,7 +159,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, activityCategory.getName());
             pstmt.executeUpdate();
@@ -185,7 +185,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.UPDATE_CATEGORY);
             pstmt.setString(1, activityCategory.getName());
             pstmt.setInt(2, activityCategory.getId());
@@ -211,7 +211,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.DELETE_CATEGORY);
             pstmt.setInt(1, activityCategory.getId());
             if(pstmt.executeUpdate() == 1) {

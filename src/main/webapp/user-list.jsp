@@ -203,12 +203,15 @@
                                 ${s.status}
                             </td>
                             <td>
+                                <c:if test="${s.status != 'UNBOOKED'}">
                                 <form action="user-act-add" method="get" style="display: inline;">
                                     <input type="hidden" name="status" value="2"/>
                                     <input type="hidden" name="id" value="${s.id}"/>
-                                    <button type="submit"> <fmt:message key="label.accept"/> </button>
-                                </form>
 
+                                    <button type="submit"> <fmt:message key="label.accept"/> </button>
+
+                                </form>
+                                </c:if>
                             </td>
                             <td>
                                 <form action="user-act-add" method="post" style="display: inline;">
@@ -231,7 +234,6 @@
                         </c:if> &nbsp;
                     </c:forEach>
                 </div>
-
         </div>   
     </div>
 </div>

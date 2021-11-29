@@ -20,7 +20,11 @@ import java.util.List;
 public class ActivityAll extends HttpServlet {
     private static final Logger logger = Logger.getLogger(ActivityAll.class);
     private static final int PAGE_SIZE = 7;
-    @Override
+
+    /** Selects portion of activities based on parameters stored in session
+     *  If request contains some of these parameters the values in session updates
+     */
+     @Override
     public void doGet (HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         try {
@@ -28,17 +32,12 @@ public class ActivityAll extends HttpServlet {
             String actOrder = assignStringSessionAttribute(session, request, "activityOrder");
             int actPage = assignIntSessionAttribute(session, request, "activityPage");
             ActivityService activityService = new ActivityService();
-            List<Activity> activities = activityService.getAll();
-
             int count = activityService.getCount();
             int numberPages = count/ PAGE_SIZE;
             if(count% PAGE_SIZE != 0) {
                 numberPages++;
             }
-
-
-            activities = activityService.getSortedPortion(actSortBy, (actPage-1)* PAGE_SIZE, PAGE_SIZE, actOrder);
-
+            List<Activity> activities = activityService.getSortedPortion(actSortBy, (actPage-1)* PAGE_SIZE, PAGE_SIZE, actOrder);
             request.setAttribute("page", actPage);
             request.setAttribute("numPages", numberPages);
             request.setAttribute("activities", activities);
@@ -54,12 +53,17 @@ public class ActivityAll extends HttpServlet {
         }
     }
 
-
+    /**
+     *
+    */
     @Override
     public void doPost (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //does nothing
     }
 
+    /**
+     * If specified parameter of request is not null it's value is stored in the session attribute with the same name and returned
+    */
     private String assignStringSessionAttribute (HttpSession session, HttpServletRequest request, String name) {
         String param = request.getParameter(name);
         if(param != null) {
@@ -68,6 +72,9 @@ public class ActivityAll extends HttpServlet {
         return (String)(session.getAttribute(name));
     }
 
+    /**
+     * If specified parameter of request is not null it's value is stored in the session attribute with the same name and returned
+     */
     private Integer assignIntSessionAttribute (HttpSession session, HttpServletRequest request, String name) throws NumberFormatException {
         String param = request.getParameter(name);
         if(param != null) {

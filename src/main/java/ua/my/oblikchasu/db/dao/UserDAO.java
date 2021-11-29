@@ -2,7 +2,7 @@ package ua.my.oblikchasu.db.dao;
 
 import org.apache.log4j.Logger;
 import ua.my.oblikchasu.util.LogMsg;
-import ua.my.oblikchasu.db.ConnectionPool;
+import ua.my.oblikchasu.db.DBService;
 import ua.my.oblikchasu.db.entity.User;
 import ua.my.oblikchasu.db.entity.UserRole;
 import ua.my.oblikchasu.db.exception.DBException;
@@ -22,7 +22,7 @@ public class UserDAO implements GenericDAO<User> {
         Statement stmt = null;
         List<User> users = new LinkedList<>();
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery(DBQuery.SELECT_ALL_USERS);
             while (rs.next()) {
@@ -53,7 +53,7 @@ public class UserDAO implements GenericDAO<User> {
         Statement stmt = null;
         int recordNumber = 0;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery("SELECT COUNT(*) FROM user");
             if (rs.next()) {
@@ -77,7 +77,7 @@ public class UserDAO implements GenericDAO<User> {
         Statement stmt = null;
         List<User> users = new LinkedList<>();
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery(DBQuery.SELECT_ALL_USERS + DBQuery.suffix.get(sortBy));
             while (rs.next()) {
@@ -108,7 +108,7 @@ public class UserDAO implements GenericDAO<User> {
         PreparedStatement pstmt = null;
         List<User> users = new LinkedList<>();
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(
                         DBQuery.SELECT_ALL_USERS +
                             DBQuery.ORDER_BY +
@@ -146,7 +146,7 @@ public class UserDAO implements GenericDAO<User> {
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_USER_BY_NAME);
             pstmt.setString(1, name);
             rs = pstmt.executeQuery();
@@ -175,7 +175,7 @@ public class UserDAO implements GenericDAO<User> {
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_USER_BY_LOGIN);
             pstmt.setString(1, login);
             rs = pstmt.executeQuery();
@@ -207,7 +207,7 @@ public class UserDAO implements GenericDAO<User> {
         PreparedStatement pstmt = null;
         User user=null;
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_USER_BY_ID);
             pstmt.setInt(1, id);
             rs = pstmt.executeQuery();
@@ -238,7 +238,7 @@ public class UserDAO implements GenericDAO<User> {
         PreparedStatement pstmt = null;
 
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.INSERT_USER, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, user.getLogin());
             pstmt.setString(2, user.getPassword());
@@ -268,7 +268,7 @@ public class UserDAO implements GenericDAO<User> {
         PreparedStatement pstmt = null;
 
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.UPDATE_USER);
             pstmt.setString(1, user.getPassword());
             pstmt.setString(2, user.getName());
@@ -295,7 +295,7 @@ public class UserDAO implements GenericDAO<User> {
         PreparedStatement pstmt = null;
 
         try {
-            con = ConnectionPool.getConnection();
+            con = DBService.getConnection();
             pstmt = con.prepareStatement(DBQuery.DELETE_USER);
             pstmt.setInt(1, user.getId());
 
