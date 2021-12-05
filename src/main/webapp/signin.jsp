@@ -37,6 +37,9 @@
            <fmt:message key="label.sign" var="buttonText"/>
         <input name="submit" type="submit" value="${buttonText}">
         <br> <br>
+        <c:if test="${requestScope.errorMsg != null}">
+            <label style="color: red;"><fmt:message key="${requestScope.errorMsg}"/></label>
+        </c:if>
     </form>
 </div>
 <br>

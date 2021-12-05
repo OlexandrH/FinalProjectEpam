@@ -131,7 +131,6 @@
             </div>
             <form action="user-edit" method="POST">
 
-
                 <br>
                 <b>
                 &nbsp;&nbsp;<label ><fmt:message key="label.edit"/></label>:<br>
@@ -144,7 +143,13 @@
                 <input type="hidden" name="id" value="${sessionScope.editUser.id}">
                 &nbsp;&nbsp;<button type="submit"><fmt:message key="label.save"/></button>&nbsp;
                 <button type="reset"><fmt:message key="label.restore"/></button>&nbsp;
+
+
             </form>
+                <br>
+                <c:if test="${requestScope.errorMsg != null}">
+                    <label style="color: red;"><fmt:message key="${requestScope.errorMsg}"/></label>
+                </c:if>
             <hr>
 
 
@@ -203,13 +208,11 @@
                                 ${s.status}
                             </td>
                             <td>
-                                <c:if test="${s.status != 'UNBOOKED'}">
+                                <c:if test="${s.status == 'BOOKED'}">
                                 <form action="user-act-add" method="get" style="display: inline;">
                                     <input type="hidden" name="status" value="2"/>
                                     <input type="hidden" name="id" value="${s.id}"/>
-
                                     <button type="submit"> <fmt:message key="label.accept"/> </button>
-
                                 </form>
                                 </c:if>
                             </td>

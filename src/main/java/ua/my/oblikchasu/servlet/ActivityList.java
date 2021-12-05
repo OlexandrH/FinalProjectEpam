@@ -3,10 +3,9 @@ package ua.my.oblikchasu.servlet;
 
 import ua.my.oblikchasu.db.entity.ActivityCategory;
 import ua.my.oblikchasu.service.ActivityCategoryService;
-import ua.my.oblikchasu.service.ServiceException;
+import ua.my.oblikchasu.service.exception.ServiceException;
 import ua.my.oblikchasu.db.entity.Activity;
 import ua.my.oblikchasu.service.ActivityService;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,14 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import org.apache.log4j.Logger;
-import ua.my.oblikchasu.util.JavaScriptMessage;
 import ua.my.oblikchasu.util.LogMsg;
 
 @WebServlet("/activity-list")
 public class ActivityList extends HttpServlet {
     private static final Logger logger = Logger.getLogger(ActivityList.class);
-    int categoryId=0;
-
+    private int categoryId=0;
 
     /**
      * Gets all activities from category cat-id and sends it to activity-list page
@@ -63,6 +60,7 @@ public class ActivityList extends HttpServlet {
     /**
      * Adds, updates or deletes activity depending on the value of the param value of request
     */
+    @Override
     public void doPost (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
@@ -71,7 +69,6 @@ public class ActivityList extends HttpServlet {
             String param = request.getParameter("param");
             ActivityService activityService = new ActivityService();
             if (id != null) {
-
                 int actId = Integer.parseInt(id);
                 if ("delete".equals(param)) {
                     activityService.delete(new Activity(actId));
@@ -84,7 +81,6 @@ public class ActivityList extends HttpServlet {
                     activityService.update(activity);
                 }
             } else if ("add".equals(param)) {
-                System.out.println("add");
                 String name = request.getParameter("name");
                 String catId = request.getParameter("cat-id");
 
@@ -92,12 +88,9 @@ public class ActivityList extends HttpServlet {
                     if (activityService.getByName(name) == null) {
                         Activity activity = new Activity(0, name, new ActivityCategory(Integer.parseInt(catId), ""));
                         activityService.add(activity);
-                    } else {
-                        JavaScriptMessage.alert(response.getWriter(), "Activity already exists", "category-list");
                     }
                 }
             }
-
             response.sendRedirect("activity-list?cat-id=" + categoryId);
 
         } catch (ServiceException | IOException e) {

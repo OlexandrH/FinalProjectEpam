@@ -78,8 +78,8 @@
        <input type="hidden" value="${s.id}" name="id"/>
        <input type="hidden" value="update" name="param"/>
        <button type="submit" style="display: inline" ><fmt:message key="label.save"/> </button>
+       <button type="reset" style="display: inline"><fmt:message key="label.restore"/></button>
        </form>
-       <a href="category-edit?id=${s.id}"></a>
        </td>
 
       <td>

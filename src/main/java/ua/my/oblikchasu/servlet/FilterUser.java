@@ -11,11 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(filterName="userAccessFilter", urlPatterns = {
-//        "/user.jsp",
-//        "/user-edit",
-//        "/user-act-add"
-})
+@WebFilter(filterName="userAccessFilter")
 public class FilterUser implements Filter {
     private static final Logger logger = Logger.getLogger(FilterUser.class);
     @Override

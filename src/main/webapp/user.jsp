@@ -82,6 +82,9 @@
             </form>
             <p>
                 &nbsp;
+                <c:if test="${requestScope.errorMsg != null}">
+                    <label style="color: red;"><fmt:message key="${requestScope.errorMsg}"/></label>
+                </c:if>
             </p>
         </div>
         </div>

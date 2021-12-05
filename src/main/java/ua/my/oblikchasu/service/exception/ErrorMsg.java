@@ -1,4 +1,4 @@
-package ua.my.oblikchasu.service;
+package ua.my.oblikchasu.service.exception;
 
 public abstract class ErrorMsg {
     private ErrorMsg() {}

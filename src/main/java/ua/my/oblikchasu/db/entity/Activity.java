@@ -1,5 +1,7 @@
 package ua.my.oblikchasu.db.entity;
 
+import java.util.Objects;
+
 public class Activity extends Entity{
     private int id;
     private String name;
@@ -70,6 +72,19 @@ public class Activity extends Entity{
 
     public void setTotalTime(int totalTime) {
         this.totalTime = totalTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Activity activity = (Activity) o;
+        return name.equals(activity.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
     @Override

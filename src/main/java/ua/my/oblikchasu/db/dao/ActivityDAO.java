@@ -23,7 +23,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         Statement stmt = null;
         List<Activity> activities = new LinkedList<>();
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery(DBQuery.SELECT_ALL_ACTIVITIES);
             while (rs.next()) {
@@ -54,22 +54,18 @@ public class ActivityDAO implements GenericDAO<Activity>{
         String sqlString = DBQuery.SELECT_ALL_ACTIVITIES + " "+
                 DBQuery.ORDER_BY + sortBy + " " + order + DBQuery.LIMIT;
         if("category".equals(sortBy)) {
-            sqlString = "SELECT * FROM activity INNER JOIN category ON category.id = activity.category_id ORDER BY category.name " + order + " " + DBQuery.LIMIT;
+            sqlString = DBQuery.SELECT_ACTIVITIES_SORTED_BY_CATEGORY + order + DBQuery.LIMIT;
         }
         if("totalTime".equals(sortBy)) {
-            sqlString = "select activity.id, activity.name, activity_id, category_id, sum(users_activity.amount_time) amount_time from \n" +
-                    "activity left join users_activity on users_activity.activity_id = activity.id \n" +
-                    " group by users_activity.activity_id order by amount_time " + order + DBQuery.LIMIT;
+            sqlString = DBQuery.SELECT_ACTIVITIES_SORTED_BY_TOTAL_TIME + order + DBQuery.LIMIT;
         }
 
         if("userCount".equals(sortBy)) {
-            sqlString = "select activity.id, activity.name, activity_id, category_id, count(distinct user_id) userCount from \n" +
-                    "activity left join users_activity on users_activity.activity_id = activity.id \n" +
-                    " group by users_activity.activity_id order by userCount " + order + DBQuery.LIMIT;
+            sqlString = DBQuery.SELECT_ACTIVITIES_SORTED_BY_USER_COUNT + order + DBQuery.LIMIT;
         }
 
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(sqlString);
 
             pstmt.setInt(1,from);
@@ -102,9 +98,9 @@ public class ActivityDAO implements GenericDAO<Activity>{
         Statement stmt = null;
         int recordNumber = 0;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT COUNT(*) FROM activity");
+            rs = stmt.executeQuery(DBQuery.SELECT_ACTIVITY_COUNT);
             if (rs.next()) {
                 recordNumber = rs.getInt(1);
             }
@@ -126,7 +122,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         PreparedStatement pstmt = null;
         List<Activity> activities = new LinkedList<>();
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_ACTIVITIES_BY_CATEGORY);
             pstmt.setInt(1, categoryId);
             rs = pstmt.executeQuery();
@@ -155,7 +151,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
             PreparedStatement pstmt = null;
             Activity activity = null;
             try {
-                con = DBService.getConnection();
+                con = DBService.getInstance().getConnection();
                 pstmt = con.prepareStatement(DBQuery.SELECT_ACTIVITY_BY_ID);
                 pstmt.setInt(1, id);
                 rs = pstmt.executeQuery();
@@ -184,7 +180,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         PreparedStatement pstmt = null;
         Activity activity = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_ACTIVITY_BY_NAME);
             pstmt.setString(1, name);
             rs = pstmt.executeQuery();
@@ -212,7 +208,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.INSERT_ACTIVITY, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, activity.getName());
             pstmt.setInt(2, activity.getCategory().getId());
@@ -240,7 +236,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         PreparedStatement pstmt = null;
 
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.UPDATE_ACTIVITY);
             pstmt.setString(1, activity.getName());
             pstmt.setInt(2, activity.getCategory().getId());
@@ -267,7 +263,7 @@ public class ActivityDAO implements GenericDAO<Activity>{
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.DELETE_ACTIVITY);
             pstmt.setInt(1, activity.getId());
             if(pstmt.executeUpdate() == 1) {

@@ -7,6 +7,8 @@ import ua.my.oblikchasu.db.dao.UsersActivityDAO;
 import ua.my.oblikchasu.db.entity.Activity;
 import ua.my.oblikchasu.db.entity.ActivityCategory;
 import ua.my.oblikchasu.db.exception.DBException;
+import ua.my.oblikchasu.service.exception.ErrorMsg;
+import ua.my.oblikchasu.service.exception.ServiceException;
 import ua.my.oblikchasu.util.LogMsg;
 
 import java.util.LinkedList;
@@ -21,8 +23,10 @@ public class ActivityService {
         Activity activity = null;
         try {
             activity = activityDAO.findById(id);
-            ActivityCategory activityCategory = new ActivityCategoryDAO().findById(activity.getCategory().getId());
-            activity.setCategory(activityCategory);
+            if(activity != null) {
+                ActivityCategory activityCategory = new ActivityCategoryDAO().findById(activity.getCategory().getId());
+                activity.setCategory(activityCategory);
+            }
         } catch (DBException e) {
             logger.error(ErrorMsg.ERROR , e);
             throw new ServiceException(ErrorMsg.ACTIVITY_CANNOT_FIND, e);

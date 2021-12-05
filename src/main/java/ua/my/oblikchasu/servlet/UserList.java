@@ -1,7 +1,7 @@
 package ua.my.oblikchasu.servlet;
 
 import org.apache.log4j.Logger;
-import ua.my.oblikchasu.service.ServiceException;
+import ua.my.oblikchasu.service.exception.ServiceException;
 import ua.my.oblikchasu.db.entity.User;
 import ua.my.oblikchasu.service.UserService;
 import ua.my.oblikchasu.service.UsersActivityService;
@@ -37,9 +37,12 @@ public class UserList extends HttpServlet {
                 int editUserId = Integer.parseInt(request.getParameter("editUserId"));
                 editUser = userService.getById(editUserId);
             }
+
             if (editUser == null) {
                 editUser = user;
             }
+
+            editUser = userService.getById(editUser.getId());
 
             session.setAttribute("editUser", editUser);
 
@@ -105,7 +108,7 @@ public class UserList extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //does nothing
+        doGet(request, response);
     }
 
     private String assignStringSessionAttribute(HttpServletRequest request, HttpSession session, String name) {

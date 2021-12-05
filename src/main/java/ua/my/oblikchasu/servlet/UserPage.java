@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import ua.my.oblikchasu.db.entity.Activity;
 import ua.my.oblikchasu.db.entity.UsersActivity;
 import ua.my.oblikchasu.service.ActivityService;
-import ua.my.oblikchasu.service.ServiceException;
+import ua.my.oblikchasu.service.exception.ServiceException;
 import ua.my.oblikchasu.db.entity.User;
 import ua.my.oblikchasu.service.UserService;
 import ua.my.oblikchasu.service.UsersActivityService;
@@ -88,7 +88,7 @@ public class UserPage extends HttpServlet {
 
     @Override
     public void doPost (HttpServletRequest request, HttpServletResponse response) {
-        //does nothing
+        doGet(request, response);
     }
 
 }

@@ -4,7 +4,7 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-    <display-name>Archetype Created Web Application</display-name>
+    <display-name>Time tracker</display-name>
     <resource-ref>
         <description>
             Resource reference to a factory for java.sql.Connection
@@ -13,7 +13,7 @@
             configuration for the web application.
         </description>
         <res-ref-name>
-            jdbc/pbdb
+            jdbc/mydb
         </res-ref-name>
         <res-type>
             javax.sql.DataSource
@@ -24,6 +24,5 @@
     </resource-ref>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
-        <welcome-file>default.html</welcome-file>
     </welcome-file-list>
 </web-app>

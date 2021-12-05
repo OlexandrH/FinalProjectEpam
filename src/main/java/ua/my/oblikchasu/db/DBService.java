@@ -11,7 +11,7 @@ public class DBService {
     public static final String DS_NAME = "jdbc/mydb";
     private static final Logger logger = Logger.getLogger(DBService.class);
 
-    DBService instance = null;
+    private static DBService instance = null;
     //test datasource to work without server
     private static MysqlDataSource ds;
 
@@ -35,7 +35,19 @@ public class DBService {
         //Empty constructor
     }
 
-    public static Connection getConnection () throws SQLException {
+    public static synchronized DBService getInstance () {
+        if(instance == null) {
+            instance = new DBService();
+        }
+        return instance;
+    }
+//
+//    public static Connection getConnection () throws SQLException {
+//        Connection con = ds.getConnection();
+//        return con;
+//    }
+
+    public Connection getConnection () throws SQLException {
         Connection con = ds.getConnection();
         return con;
     }

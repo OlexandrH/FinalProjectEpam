@@ -1,7 +1,7 @@
 package ua.my.oblikchasu.servlet;
 
 import org.apache.log4j.Logger;
-import ua.my.oblikchasu.service.ServiceException;
+import ua.my.oblikchasu.service.exception.ServiceException;
 import ua.my.oblikchasu.URL;
 import ua.my.oblikchasu.db.entity.User;
 import ua.my.oblikchasu.db.entity.UserRole;
@@ -26,7 +26,7 @@ public class SignIn extends HttpServlet {
         try {
             request.getRequestDispatcher("/signin.jsp").forward(request, response);
         } catch (ServletException | IOException e) {
-            e.printStackTrace();
+            logger.error(LogMsg.ERROR);
         }
     }
 
@@ -50,8 +50,8 @@ public class SignIn extends HttpServlet {
             String userPassword = request.getParameter("userPassword");
 
             try {
+                UserService userService = new UserService();
                 if(validateUser(userLogin, userPassword)) {
-                    UserService userService = new UserService();
                     user = userService.getByLogin(userLogin);
                     session.setAttribute("user", user);
                     logger.info(LogMsg.SESSION_ASSIGNED_TO_USER + LogMsg.SPACE +session.getId() +LogMsg.SPACE + user.getLogin());
@@ -63,12 +63,13 @@ public class SignIn extends HttpServlet {
                     response.sendRedirect((String)session.getAttribute("return"));
                     logger.info(userLogin + LogMsg.SIGNED_IN);
                 } else {
+                    request.setAttribute("errorMsg", "error.wrong_credentials");
                     request.getRequestDispatcher("/signin.jsp").forward(request, response);
                     logger.info(LogMsg.SPACE + userLogin + LogMsg.SPACE + LogMsg.ACCESS_DENIED);
                 }
             } catch (ServiceException | IOException | ServletException e) {
                 try {
-                    response.sendRedirect(URL.ERROR);
+                    response.sendRedirect("error.jsp");
                 } catch (IOException ex) {
                     logger.error(LogMsg.ERROR, ex);
                 }

@@ -1,7 +1,7 @@
 package ua.my.oblikchasu.servlet;
 
 import org.apache.log4j.Logger;
-import ua.my.oblikchasu.service.ServiceException;
+import ua.my.oblikchasu.service.exception.ServiceException;
 import ua.my.oblikchasu.db.entity.Activity;
 import ua.my.oblikchasu.service.ActivityService;
 import ua.my.oblikchasu.util.LogMsg;

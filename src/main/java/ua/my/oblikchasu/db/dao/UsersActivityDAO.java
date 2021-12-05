@@ -26,7 +26,7 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         Statement stmt = null;
         List<UsersActivity> usersActivities = new LinkedList<>();
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery(DBQuery.SELECT_ALL_USERS_ACTIVITIES);
             while (rs.next()) {
@@ -49,9 +49,9 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         Statement stmt = null;
         int recordNumber = 0;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT COUNT(*) FROM users_activity WHERE user_id= " + user.getId());
+            rs = stmt.executeQuery(DBQuery.SELECT_USERS_ACTIVITY_COUNT_BY_USER + user.getId());
             if (rs.next()) {
                 recordNumber = rs.getInt(1);
             }
@@ -73,9 +73,9 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         Statement stmt = null;
         int recordNumber = 0;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT COUNT(*) FROM users_activity");
+            rs = stmt.executeQuery(DBQuery.SELECT_USERS_ACTIVITY_COUNT);
             if (rs.next()) {
                 recordNumber = rs.getInt(1);
             }
@@ -97,8 +97,8 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         ResultSet rs = null;
         int recordNumber=0;
         try {
-            con = DBService.getConnection();
-            pstmt = con.prepareStatement("SELECT COUNT(DISTINCT user_id) from users_activity WHERE activity_id = ?");
+            con = DBService.getInstance().getConnection();
+            pstmt = con.prepareStatement(DBQuery.SELECT_USERS_COUNT_BY_ACTIVITY);
             pstmt.setInt(1, activity.getId());
             rs = pstmt.executeQuery();
             if(rs.next()) {
@@ -121,8 +121,8 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         ResultSet rs = null;
         int recordNumber=0;
         try {
-            con = DBService.getConnection();
-            pstmt = con.prepareStatement("SELECT SUM(amount_time) from users_activity WHERE activity_id = ?");
+            con = DBService.getInstance().getConnection();
+            pstmt = con.prepareStatement(DBQuery.SELECT_TOTAL_TIME_BY_ACTIVITY);
             pstmt.setInt(1, activity.getId());
             rs = pstmt.executeQuery();
             if(rs.next()) {
@@ -163,7 +163,7 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
 
         List<UsersActivity> usersActivities = new LinkedList<>();
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(query);
             pstmt.setInt(1, user.getId());
             pstmt.setInt(2, from);
@@ -190,7 +190,7 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         PreparedStatement pstmt = null;
         List<UsersActivity> usersActivities = new LinkedList<>();
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_ALL_USERS_ACTIVITIES +
                     DBQuery.ORDER_BY +
                     sortBy + " " +
@@ -226,7 +226,7 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         PreparedStatement pstmt = null;
         UsersActivity usersActivity = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_USERS_ACTIVITY_BY_ID);
             pstmt.setInt(1, id);
             rs = pstmt.executeQuery();
@@ -250,7 +250,7 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         PreparedStatement pstmt = null;
         List<UsersActivity> usersActivities = new LinkedList<>();
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_USERS_ACTIVITY_BY_USER);
             pstmt.setInt(1, user.getId());
             rs = pstmt.executeQuery();
@@ -274,7 +274,7 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         PreparedStatement pstmt = null;
         List<UsersActivity> usersActivities = new LinkedList<>();
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_USERS_ACTIVITY_BY_ACTIVITY);
             pstmt.setInt(1, activity.getId());
             rs = pstmt.executeQuery();
@@ -298,7 +298,7 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.INSERT_USERS_ACTIVITY, Statement.RETURN_GENERATED_KEYS);
             pstmt.setInt(1, usersActivity.getUser().getId());
             pstmt.setInt(2, usersActivity.getActivity().getId());
@@ -328,7 +328,7 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.UPDATE_USERS_ACTIVITY);
             pstmt.setInt(1, usersActivity.getStatus().ordinal());
             pstmt.setLong(2, usersActivity.getAmountTime());
@@ -356,7 +356,7 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.DELETE_USERS_ACTIVITY);
             pstmt.setInt(1, usersActivity.getId());
             if(pstmt.executeUpdate() == 1) {
@@ -377,7 +377,6 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
     }
 
     private UsersActivity constructUsersActivity (ResultSet rs) throws SQLException {
-
                 return new UsersActivity(
                 rs.getInt("id"),
                 new User(rs.getInt("user_id")),
@@ -385,6 +384,5 @@ public class UsersActivityDAO implements GenericDAO<UsersActivity> {
                 rs.getLong("amount_time"),
                 UsersActivityStatus.values() [rs.getInt("status")]
         );
-
     }
 }

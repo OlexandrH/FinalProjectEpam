@@ -13,7 +13,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
+
     private static final Logger logger = Logger.getLogger(ActivityCategoryDAO.class);
+
     @Override
     public List<ActivityCategory> findAll() throws DBException {
         Connection con = null;
@@ -21,7 +23,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         Statement stmt = null;
         List<ActivityCategory> activityCategories = new LinkedList<>();
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery(DBQuery.SELECT_ALL_CATEGORIES);
             while (rs.next()) {
@@ -49,9 +51,9 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         Statement stmt = null;
         int recordNumber = 0;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT COUNT(*) FROM category");
+            rs = stmt.executeQuery(DBQuery.SELECT_CATEGORY_COUNT);
             if (rs.next()) {
                 recordNumber = rs.getInt(1);
             }
@@ -72,7 +74,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         PreparedStatement pstmt = null;
         List<ActivityCategory> activityCategories = new LinkedList<>();
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_ALL_CATEGORIES +
                     DBQuery.ORDER_BY + sortBy + " " + order + DBQuery.LIMIT);
             pstmt.setInt(1, from);
@@ -104,7 +106,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         PreparedStatement pstmt = null;
         ActivityCategory activityCategory = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_CATEGORY_BY_NAME);
             pstmt.setString(1, name);
             rs = pstmt.executeQuery();
@@ -132,7 +134,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         PreparedStatement pstmt = null;
         ActivityCategory activityCategory = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.SELECT_CATEGORY_BY_ID);
             pstmt.setInt(1, id);
             rs = pstmt.executeQuery();
@@ -159,7 +161,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, activityCategory.getName());
             pstmt.executeUpdate();
@@ -185,7 +187,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.UPDATE_CATEGORY);
             pstmt.setString(1, activityCategory.getName());
             pstmt.setInt(2, activityCategory.getId());
@@ -211,7 +213,7 @@ public class ActivityCategoryDAO implements GenericDAO<ActivityCategory>{
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
-            con = DBService.getConnection();
+            con = DBService.getInstance().getConnection();
             pstmt = con.prepareStatement(DBQuery.DELETE_CATEGORY);
             pstmt.setInt(1, activityCategory.getId());
             if(pstmt.executeUpdate() == 1) {

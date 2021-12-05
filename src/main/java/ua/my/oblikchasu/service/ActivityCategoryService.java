@@ -4,6 +4,9 @@ import org.apache.log4j.Logger;
 import ua.my.oblikchasu.db.dao.ActivityCategoryDAO;
 import ua.my.oblikchasu.db.entity.ActivityCategory;
 import ua.my.oblikchasu.db.exception.DBException;
+import ua.my.oblikchasu.service.exception.ErrorMsg;
+import ua.my.oblikchasu.service.exception.ServiceException;
+
 import java.util.LinkedList;
 import java.util.List;
 

@@ -4,11 +4,15 @@ import org.apache.log4j.Logger;
 import ua.my.oblikchasu.db.dao.UsersActivityDAO;
 import ua.my.oblikchasu.db.entity.*;
 import ua.my.oblikchasu.db.exception.DBException;
+import ua.my.oblikchasu.service.exception.ErrorMsg;
+import ua.my.oblikchasu.service.exception.ServiceException;
+
 import java.util.LinkedList;
 import java.util.List;
 
 
 public class UsersActivityService {
+
     private static final Logger logger = Logger.getLogger(UsersActivityService.class);
     UsersActivityDAO usersActivityDAO = new UsersActivityDAO() ;
     UserService userService = new UserService();
@@ -18,8 +22,10 @@ public class UsersActivityService {
         UsersActivity usersActivity = null;
         try {
             usersActivity = usersActivityDAO.findById(id);
-            usersActivity.setUser(userService.getById(usersActivity.getUser().getId()));
-            usersActivity.setActivity(activityService.getById(usersActivity.getActivity().getId()));
+            if(usersActivity != null) {
+                usersActivity.setUser(userService.getById(usersActivity.getUser().getId()));
+                usersActivity.setActivity(activityService.getById(usersActivity.getActivity().getId()));
+            }
         } catch (DBException e) {
             logger.error(ErrorMsg.ERROR, e);
             throw new ServiceException(ErrorMsg.USERS_ACTIVITY_CANNOT_DELETE, e);

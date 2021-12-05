@@ -1,5 +1,7 @@
 package ua.my.oblikchasu.db.entity;
 
+import java.util.Objects;
+
 public class UsersActivity extends Entity {
     private int id;
     private long amountTime;
@@ -56,6 +58,19 @@ public class UsersActivity extends Entity {
 
     public void setStatus(UsersActivityStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UsersActivity that = (UsersActivity) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override

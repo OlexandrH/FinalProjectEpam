@@ -3,18 +3,19 @@ package ua.my.oblikchasu.service;
 import org.apache.log4j.Logger;
 import ua.my.oblikchasu.db.dao.UserDAO;
 import ua.my.oblikchasu.db.entity.User;
-import ua.my.oblikchasu.db.entity.UserRole;
 import ua.my.oblikchasu.db.exception.DBException;
+import ua.my.oblikchasu.service.exception.ErrorMsg;
+import ua.my.oblikchasu.service.exception.ServiceException;
+
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserService {
     private static final Logger logger = Logger.getLogger(UserService.class);
     UserDAO userDAO = new UserDAO();
-    User user = null;
 
     public User getById(int id) throws ServiceException {
+        User user = null;
         try {
             user = userDAO.findById(id);
         } catch (DBException e) {
@@ -80,20 +81,6 @@ public class UserService {
         return users;
     }
 
-    public List<User> getByRole(UserRole role) throws ServiceException {
-        List<User> allUsers = new LinkedList<>();
-        try {
-            allUsers = userDAO.findAll();
-        } catch (DBException e) {
-            logger.error(ErrorMsg.ERROR, e);
-            throw new ServiceException(ErrorMsg.USER_CANNOT_FIND, e);
-        }
-        allUsers = allUsers.stream()
-                .filter((user) -> user.getRole() == role)
-                .collect(Collectors.toList());
-        return allUsers;
-    }
-
     public User add(User user) throws ServiceException {
         User createdUser = null;
         try {
@@ -113,7 +100,6 @@ public class UserService {
             throw new ServiceException(ErrorMsg.USER_CANNOT_UPDATE, e);
         }
     }
-
 
     public boolean delete(User user) throws ServiceException {
         try {
