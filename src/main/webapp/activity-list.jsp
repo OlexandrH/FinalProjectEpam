@@ -43,7 +43,7 @@
 <div class="header-bar">
         <h3>
             <fmt:message key="label.activities"/>
-            <a href="category-list"><fmt:message key="label.back"/></a>
+            <a href="category-list"><fmt:message key="label.categories"/></a>
         </h3>
 </div>
 <br>

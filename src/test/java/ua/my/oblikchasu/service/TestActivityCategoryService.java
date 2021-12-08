@@ -1,4 +1,4 @@
-package service;
+package ua.my.oblikchasu.service;
 
 import org.junit.After;
 import org.junit.Before;

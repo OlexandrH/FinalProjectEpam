@@ -52,7 +52,8 @@ pageEncoding="UTF-8"%>
 </div>
 <br>
 <div class="message-bar">
-    <h4>If you already have an account, please <a href="signin.jsp">sign-in</a></h4>
+    <h4><fmt:message key="label.haveaccount"/><a href="signin.jsp"> <fmt:message key="label.signin"/></a></h4>
+    <!-- <h4>If you already have an account, please <a href="signin.jsp">sign-in</a></h4> -->
 </div>
 
 </body>

@@ -1,4 +1,4 @@
-package dao;
+package ua.my.oblikchasu.dao;
 
 import org.junit.After;
 import org.junit.Before;

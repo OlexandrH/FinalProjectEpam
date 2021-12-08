@@ -1,4 +1,4 @@
-package dao;
+package ua.my.oblikchasu.dao;
 
 import org.junit.After;
 import org.junit.Test;
@@ -50,6 +50,7 @@ public class TestCategoryDAO {
     public void shouldFindCountCategories () throws DBException {
         ActivityCategoryDAO activityCategoryDAO = new ActivityCategoryDAO();
         int categoryCount = activityCategoryDAO.findCount();
+        activityCategoryDAO.create(new ActivityCategory(0,"Test"));
         int categoryCountAfterAddingCategory = activityCategoryDAO.findCount();
         assertEquals(1, categoryCountAfterAddingCategory - categoryCount);
     }

@@ -1,4 +1,4 @@
-package util;
+package ua.my.oblikchasu.util;
 
 import org.junit.Test;
 import ua.my.oblikchasu.util.Validator;

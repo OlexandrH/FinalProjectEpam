@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE web-app PUBLIC
-        "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-        "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
-<web-app>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <display-name>Time tracker</display-name>
     <resource-ref>
         <description>
-            Resource reference to a factory for java.sql.Connection
-            instances that may be used for talking to a particular
-            database that is configured in the context
-            configuration for the web application.
         </description>
         <res-ref-name>
             jdbc/mydb
@@ -25,4 +18,8 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/webapp/error.jsp</location>
+    </error-page>
 </web-app>
